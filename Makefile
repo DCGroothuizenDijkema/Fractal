@@ -4,7 +4,7 @@
 CXX=cl
 LINK=link
 
-FLAGS=/EHsc /std:c++17 /I/lib/boost/ /I./src/ /c /Fo:./obj/
+FLAGS=/EHsc /std:c++17 /I./src/ /c /Fo:./obj/ /O2
 
 SRC=./src/newton.cpp ./src/mandelbrot.cpp
 OBJ=./obj/newton.obj ./obj/mandelbrot.obj
