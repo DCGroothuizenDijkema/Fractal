@@ -14,17 +14,16 @@ INC=./src/fractal.hpp
 TARGET=fractal.dll
 
 all: dir $(TARGET)
-test: dir $(TEST)
 
 dir: 
 	-@ if NOT EXIST "./bin/" mkdir "./bin/"
 	-@ if NOT EXIST "./obj/" mkdir "./obj"
 
 $(TARGET):	$(OBJ)
-	$(LINK) /DLL /OUT:./bin/$(TARGET) $(OBJ)
+	$(LINK) /DLL /OUT:./bin/$(TARGET) ./obj/mandelbrot.obj
 
 obj/newton.obj: ./src/newton.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
 
-obj/mandelbrot.obj: ./src/newton.cpp $(INC)
+obj/mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/mandelbrot.cpp
