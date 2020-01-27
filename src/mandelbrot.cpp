@@ -31,20 +31,20 @@ int iterate(const std::complex<double> &init, const std::complex<double> &c, con
   return itr+1;
 }
 
-void __declspec(dllexport) sample(int **iterations, const double x, const double y, const int max_itr, const int xresolution, 
-  const int yresolution, const double startx, const double endx, const double starty, const double endy)
+void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int xresolution, const int yresolution,
+  const double startx, const double endx, const double starty, const double endy)
 {
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
 
-  std::complex<double> init(x,y);
+  const std::complex<double> init(0.,0.);
 
   for (int itr=0;itr<xresolution;++itr)
   {
-    double real=startx+deltax*itr;
+    double imag=starty+deltay*itr;
     for (int jtr=0;jtr<yresolution;++jtr)
     {
-      double imag=starty+deltay*jtr;
+      double real=startx+deltax*jtr;
       *(*(iterations+itr)+jtr)=iterate(init,std::complex<double>(real,imag),max_itr);
     }
   }
