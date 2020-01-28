@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 
 from huygens.interf import c_matrix
 
-__all__=[]
+__all__=['sample_mandelbrot','plot_mandelbrot']
 
 # load the lib
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
