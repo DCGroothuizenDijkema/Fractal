@@ -27,7 +27,7 @@ _sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHNNNN@Z')
 _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double]
 _sample_mandelbrot.restype=None
 
-def plot_mandelbrot(iterations,file_name='out.png'):
+def plot_mandelbrot(iterations,log=True,file_name='out.png',dpi=1200):
   fig,ax=plt.subplots()
   fig.subplots_adjust(0,0,1,1)
 
@@ -36,8 +36,10 @@ def plot_mandelbrot(iterations,file_name='out.png'):
   ax.set_xticklabels([])
   ax.set_yticklabels([])
 
+  if log:
+    iterations=np.log(iterations)
   ax.imshow(iterations,cmap='Spectral_r')
-  plt.savefig(file_name)
+  plt.savefig(file_name,dpi=dpi)
 
 def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_itr):
   startx=central_point[0]-x_span/2.
