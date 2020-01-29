@@ -64,4 +64,4 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
   )
 
   del tmp
-  return np.ctypeslib.as_array(act),limit.contents.value
+  return np.flipud(np.ctypeslib.as_array(act)),limit.contents.value
