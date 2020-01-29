@@ -14,7 +14,8 @@ import os
 
 from fractal import *
 
-def produce_mandelbrot_visualisation(example='one',show_fig=False,save_fig=True,file_dir='./out/',file_name='out.pdf'):
+def produce_mandelbrot_visualisation(example='zoom_level_zero',resolution=1001,show_fig=False,save_fig=True,file_dir='./out/'
+  ,file_name='out.pdf'):
 
   try:
     os.makedirs(file_dir) 
@@ -22,10 +23,11 @@ def produce_mandelbrot_visualisation(example='one',show_fig=False,save_fig=True,
     if err.errno != errno.EEXIST:
       raise
 
-  if example=='one':
-    iterations=sample_mandelbrot((-0.7435669,-0.1314023),0.0022878,0.0022878,5001,5001,1000)
-    plot_mandelbrot(iterations,file_name=file_dir+file_name)
-    return
+  if example=='zoom_level_zero':
+    dx=3
+    dy=2
+    iterations,limit=sample_mandelbrot((-0.7,0.0),3,2,dx*resolution,dy*resolution,1000)
+    plot_mandelbrot(iterations,limit,file_name=file_dir+file_name,fig_inches=(6*dx,6*dy))
 
 if __name__=='__main__':
-  produce_mandelbrot_visualisation()
+  produce_mandelbrot_visualisation('zoom_level_zero')
