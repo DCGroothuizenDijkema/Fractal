@@ -22,13 +22,13 @@ __all__=['sample_mandelbrot','plot_mandelbrot']
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 
 # extract the functions
-_sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHQEAHNNNN@Z')
+_sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHQEAHNNNN_N@Z')
 
 # assign arg and return types
-_sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double,ct.c_double]
+_sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_mandelbrot.restype=None
 
-def plot_mandelbrot(iterations,limit,log=True,file_name='out.png',fig_inches=(12,12),dpi=1200):
+def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200,color_map=None):
   fig,ax=plt.subplots()
   fig.subplots_adjust(0,0,1,1)
 
@@ -44,13 +44,17 @@ def plot_mandelbrot(iterations,limit,log=True,file_name='out.png',fig_inches=(12
   fig.set_size_inches(fig_inches)
 
   masked_iterations=np.ma.masked_where(iterations==limit,iterations)
-  cmap=cm.Spectral_r
-  cmap.set_bad(color='black')
+  if color_map is None:
+    color_map=cm.Spectral_r
+  color_map.set_bad(color='black')
 
-  ax.imshow(masked_iterations,cmap=cmap)
-  plt.savefig(file_name,dpi=dpi)
+  ax.imshow(masked_iterations,cmap=color_map)
+  if show_fig:
+    plt.show()
+  if save_fig:
+    plt.savefig(file_name,dpi=dpi)
 
-def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_itr):
+def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   startx=central_point[0]-x_span/2.
   starty=central_point[1]-y_span/2.
   endx=central_point[0]+x_span/2.
@@ -60,7 +64,7 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
   tmp,act=c_matrix(ct.c_int,y_resolution,x_resolution)
   _sample_mandelbrot(
     tmp,ct.c_int(max_itr),ct.c_int(x_resolution),ct.c_int(y_resolution),limit
-    ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy)
+    ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
   )
 
   del tmp
