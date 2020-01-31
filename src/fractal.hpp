@@ -16,7 +16,9 @@
 
 #include <cmath>
 
+#include <chrono>
 #include <complex>
+#include <iostream>
 #include <limits>
 
 #endif // FRACTAL_H__
