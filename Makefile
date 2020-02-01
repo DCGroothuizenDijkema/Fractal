@@ -20,7 +20,7 @@ dir:
 	-@ if NOT EXIST "./obj/" mkdir "./obj"
 
 $(TARGET):	$(OBJ)
-	$(LINK) /DLL /OUT:./bin/$(TARGET) ./obj/mandelbrot.obj
+	$(LINK) /DLL /OUT:./bin/$(TARGET) $(OBJ)
 
 obj/newton.obj: ./src/newton.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
