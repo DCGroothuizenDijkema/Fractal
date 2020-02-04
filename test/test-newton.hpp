@@ -53,8 +53,8 @@ BOOST_AUTO_TEST_SUITE(test_newton)
 
     delete coeffs;
     coeffs=new double[2];
-    *coeffs=1;
-    *(coeffs+1)=1;
+    *coeffs=1.;
+    *(coeffs+1)=1.;
 
     result=polynomial_and_deriv(std::complex<double>(4.,0.),coeffs,1);
     BOOST_CHECK(result.first==5.);
@@ -72,6 +72,34 @@ BOOST_AUTO_TEST_SUITE(test_newton)
       result=polynomial_and_deriv(std::complex<double>(i,j),coeffs,1);
       BOOST_CHECK(result.first==*(coeffs+1)*std::complex<double>(i,j)+*coeffs);
       BOOST_CHECK(result.second==*(coeffs+1));
+    }
+
+    delete coeffs;
+    coeffs=new double[3];
+    *coeffs=1.;
+    *(coeffs+1)=-1.;
+    *(coeffs+2)=2.;
+
+    result=polynomial_and_deriv(std::complex<double>(1.,0.),coeffs,2);
+
+    BOOST_CHECK(result.first==std::complex<double>(2.,0.));
+    BOOST_CHECK(result.second==std::complex<double>(3.,0.));
+
+    for (int itr=0;itr<1000;++itr)
+    {
+      *coeffs=dist(gen);
+      *(coeffs+1)=dist(gen);
+      *(coeffs+2)=dist(gen);
+
+      double i=dist(gen),j=dist(gen);
+      std::complex<double> expected_poly=*(coeffs+2)*std::complex<double>(i,j)*std::complex<double>(i,j)+
+        *(coeffs+1)*std::complex<double>(i,j)+*coeffs,expected_deriv=2**(coeffs+2)*std::complex<double>(i,j)+*(coeffs+1);
+      result=polynomial_and_deriv(std::complex<double>(i,j),coeffs,2);
+
+      BOOST_CHECK_CLOSE_FRACTION(result.first.real(),expected_poly.real(),0.0001);
+      BOOST_CHECK_CLOSE_FRACTION(result.first.imag(),expected_poly.imag(),0.0001);
+      BOOST_CHECK_CLOSE_FRACTION(result.second.real(),expected_deriv.real(),0.0001);
+      BOOST_CHECK_CLOSE_FRACTION(result.second.imag(),expected_deriv.imag(),0.0001);
     }
   }
 
