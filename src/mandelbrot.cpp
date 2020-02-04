@@ -23,6 +23,22 @@ int iterate(std::complex<double> x, const std::complex<double> &c, const int max
   return std::numeric_limits<int>::max();
 }
 
+void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr,
+  const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose)
+{
+  const std::complex<double> init(0.,0.);
+  
+  for (int itr=start_itr;itr<end_itr;++itr)
+  {
+    double imag=starty+deltay*itr;
+    for (int jtr=0;jtr<xresolution;++jtr)
+    {
+      double real=startx+deltax*jtr;
+      *(*(iterations+itr)+jtr)=iterate(init,std::complex<double>(real,imag),max_itr);
+    }
+  }
+}
+
 void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int xresolution, const int yresolution,
   int * const limit, const double startx, const double endx, const double starty, const double endy, const bool verbose)
 {
