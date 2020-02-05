@@ -17,7 +17,7 @@ int iterate(std::complex<double> x, const std::complex<double> &c, const int max
 
   for (itr=0;itr<max_itr;++itr)
   {
-    if (abs(x)>2) { return ++itr; }
+    if (abs(x)>2) { return itr; }
     x=x*x+c;
   }
   return std::numeric_limits<int>::max();
@@ -38,17 +38,6 @@ void compute_mandelbrot_range(int **iterations, const int max_itr, const int xre
     }
     if (verbose&&itr%100==0&&itr!=0) { std::cout << "Processed " << itr*xresolution << " points of " << total << "." << std::endl; }
   }
-}
-
-std::vector<int> iteration_limits(const int num_threads, const int yresolution)
-{
-  const int span=yresolution/num_threads;
-  std::vector<int> increments;
-
-  for (int itr=0;itr<num_threads;++itr) { increments.push_back(span*itr); }
-  increments.push_back(yresolution);
-
-  return increments;
 }
 
 void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution

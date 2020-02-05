@@ -24,10 +24,20 @@
 #include <tuple>
 #include <vector>
 
+inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
+{
+  const int span=yresolution/num_threads;
+  std::vector<int> increments;
+
+  for (int itr=0;itr<num_threads;++itr) { increments.push_back(span*itr); }
+  increments.push_back(yresolution);
+
+  return increments;
+}
+
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
-std::vector<int> iteration_limits(const int num_threads, const int yresolution);
 void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
   , const int yresolution, int * const limit, const double startx, const double endx, const double starty, const double endy
   , const bool verbose);
