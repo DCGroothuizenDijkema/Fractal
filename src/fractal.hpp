@@ -34,5 +34,10 @@ void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr
 
 std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const std::complex<double> &x, double * const coeffs
   , const int degree);
+std::complex<double> newton_root(double * const coeffs, int * const itr_taken, const std::complex<double> x, const int degree
+  , const int max_itr, const double tol);
+void __declspec(dllexport) sample_newton(double **real, double **imaginary, int **iterations, double * coeffs, const int max_itr
+  , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
+  , const double endx, const double starty, const double endy, const bool verbose);
 
 #endif // FRACTAL_H__
