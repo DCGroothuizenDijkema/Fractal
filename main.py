@@ -9,9 +9,7 @@
 # Main file to produce visualisations of fractals
 
 
-import matplotlib.cm as cm
-
-from fractal import *
+from fractal import sample_mandelbrot,plot_mandelbrot
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolution=3001,show_fig=False,save_fig=True,
   file_name='mandelbrot.pdf',dpi=1200,verbose=False):
