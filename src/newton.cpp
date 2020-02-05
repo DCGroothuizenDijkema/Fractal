@@ -25,10 +25,30 @@ std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const 
   return std::make_pair(p,p_prime);
 }
 
-std::complex<double> newton_root(double * const coeffs, int * const itr_taken, const std::complex<double> x, const int degree
+std::complex<double> newton_root(double * const coeffs, int * const itr_taken, std::complex<double> x, const int degree
   , const int max_itr, const double tol)
 {
-  return std::complex<double>(0.,0.);
+  std::complex<double> init=x; 
+  for (int itr=0;itr<max_itr;++itr)
+  {
+    std::complex<double> f_x,g_x;
+    std::tie(f_x,g_x)=polynomial_and_deriv(x,coeffs,degree);
+    if (abs(f_x)<tol)
+    {
+      *itr_taken=itr;
+      return x;
+    }
+    if (g_x==std::complex<double>(0.,0.))
+    {
+      std::cerr << "Zero deriavtive encountered when starting at " << init << std::endl;
+      *itr_taken=std::numeric_limits<int>::max();
+      return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
+    }
+    
+    x-=f_x/g_x;
+  }
+  *itr_taken=std::numeric_limits<int>::max();
+  return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
 }
 
 void __declspec(dllexport) sample_newton(double **real, double **imaginary, int **iterations, double * coeffs, const int max_itr
