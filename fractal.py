@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-from huygens.interf import c_matrix,c_pointer
+from huygens.interf import c_matrix,c_vector,c_pointer
 
 __all__=['sample_mandelbrot','plot_mandelbrot']
 
@@ -23,13 +23,19 @@ _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 
 # extract the functions
 _sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHHQEAHNNNN_N@Z')
+_sample_newton=getattr(_libc,'?sample_newton@@YAXPEAPEAN0PEAPEAHPEANHHHHHQEAHNNNN_N@Z')
 
 # assign arg and return types
 _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double
   ,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_mandelbrot.restype=None
+_sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_int))
+  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double
+  ,ct.c_double,ct.c_bool]
+_sample_newton.restype=None
 
-def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200,color_map=None):
+def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
+  ,color_map=None):
   fig,ax=plt.subplots()
   fig.subplots_adjust(0,0,1,1)
 
