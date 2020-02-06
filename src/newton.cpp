@@ -51,7 +51,25 @@ std::complex<double> newton_root(double * const coeffs, int * const itr_taken, s
   return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
 }
 
-void __declspec(dllexport) sample_newton(double **real, double **imaginary, int **iterations, double * coeffs, const int max_itr
+void compute_newton_range(double **re, double **im, int **iterations, double * coeffs, const int max_itr, const int degree
+  , const int xresolution, const int start_itr, const int end_itr, const double startx, const double starty, const double deltax
+  , const double deltay, const int total, bool verbose)
+{
+  for (int itr=start_itr;itr<end_itr;++itr)
+  {
+    double imag=starty+deltay*itr;
+    for (int jtr=0;jtr<xresolution;++jtr)
+    {
+      double real=startx+deltax*jtr;
+      std::complex<double> root=newton_root(coeffs,(*(iterations+itr)+jtr),std::complex<double>(real,imag),degree,max_itr,1e-6);
+      *(*(re+itr)+jtr)=root.real();
+      *(*(im+itr)+jtr)=root.imag();
+    }
+    if (verbose&&itr%100==0&&itr!=0) { std::cout << "Processed " << itr*xresolution << " points of " << total << "." << std::endl; }
+  }
+}
+
+void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double * coeffs, const int max_itr
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose)
 {
