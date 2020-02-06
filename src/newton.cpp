@@ -73,4 +73,29 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose)
 {
+  const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
+  const int total=xresolution*yresolution;
+
+  const std::vector<int> increments=iteration_limits(num_threads,yresolution);
+
+  std::vector<std::thread> threads;
+  for (int itr=0;itr<increments.size()-1;++itr)
+  {
+    threads.push_back(std::thread(
+      compute_newton_range,re,im,iterations,coeffs,max_itr,degree,xresolution,increments[itr],increments[itr+1],startx,starty,deltax,deltay
+        ,total,num_threads>1 ? false : verbose
+    ));
+  }
+
+  if (verbose) { std::cout << "Processing " << total << " points." << std::endl; }
+
+  std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
+  for (std::thread &th:threads) { th.join(); }
+  std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
+
+  std::chrono::duration<double> elapsed=finish-start;
+  if (verbose) { std::cout << total << " points processed." << std::endl; }
+  if (verbose) { std::cout << "Time taken: " << elapsed.count() << "s." << std::endl; }
+
+  *limit=std::numeric_limits<int>::max();
 }
