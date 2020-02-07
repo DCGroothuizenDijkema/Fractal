@@ -24,6 +24,20 @@
 #include <tuple>
 #include <vector>
 
+template <typename T>
+struct eigenpair
+{
+  eigenpair(const size_t size);
+  eigenpair(const T value, const size_t size);
+  eigenpair()
+
+  ~eigenpair();
+private:
+  T value;
+  T* vector;
+  size_t size;
+};
+
 inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
 {
   const int span=yresolution/num_threads;
