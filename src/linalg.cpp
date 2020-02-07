@@ -11,6 +11,23 @@
 
 #include <fractal.hpp>
 
+template <typename T>
+eigenpair<T>::eigenpair(const size_t size) : size(size), vector(new T[size])
+{
+}
+
+template <typename T>
+eigenpair<T>::eigenpair(const T value, const size_t size) : eigenpair(size), value(value)
+{
+}
+
+template <typename T>
+eigenpair<T>::~eigenpair()
+{
+  delete[] vector;
+}
+
+
 double **initialise_companion_matrix(const int degree)
 {
   if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
