@@ -1,19 +1,23 @@
 
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+//
 //                                                                                                                                       //
-// test.cpp                                                                                                                              //
+// test-linalg.hpp                                                                                                                       //
 //                                                                                                                                       //
-// D. C. Groothuizen Dijkema - January, 2020                                                                                             //
+// D. C. Groothuizen Dijkema - February, 2020                                                                                            //
 //+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+//
 
 // Test file for Newton's fractals
 
 
-// because Microsoft is the worst
-#define NOMINMAX
+#include <fractal.hpp>
 
-#define BOOST_TEST_MODULE NEWTONTESTING
-#include <boost/test/included/unit_test.hpp>
+namespace LinalgTesting
+{
+BOOST_AUTO_TEST_SUITE(test_linalg)
 
-#include <test-linalg.hpp>
-#include <test-newton.hpp>
+  BOOST_AUTO_TEST_CASE(companion_matrix)
+  {
+  }
+
+BOOST_AUTO_TEST_SUITE_END()
+} // namespace LinalgTesting
