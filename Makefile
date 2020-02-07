@@ -7,14 +7,14 @@ LINK=link
 FLAGS=/EHsc /std:c++17 /I./src/ /c /Fo:./obj/ /O2
 TESTFLAGS=/EHsc /std:c++17 /I/lib/boost/ /I./src/ /I./test/ /c /Fo:./obj/
 
-SRC=./src/newton.cpp ./src/mandelbrot.cpp
-OBJ=./obj/newton.obj ./obj/mandelbrot.obj
+SRC=./src/linalg.cpp ./src/mandelbrot.cpp ./src/newton.cpp
+OBJ=./obj/linalg.obj ./obj/mandelbrot.obj ./obj/newton.obj
 
 INC=./src/fractal.hpp
-TESTINC=./test/test-newton.hpp
+TESTINC=./test/test-linalg.hpp ./test/test-newton.hpp
 
-TESTSRC=./test/test.cpp ./src/newton.cpp
-TESTOBJ=./obj/test.obj ./obj/newton.obj
+TESTSRC=./test/test.cpp /src/linalg.cpp ./src/newton.cpp
+TESTOBJ=./obj/test.obj ./obj/linalg.obj ./obj/newton.obj
 
 TARGET=fractal.dll
 TEST=test.exe
@@ -32,11 +32,14 @@ $(TARGET):	$(OBJ)
 $(TEST):	$(TESTOBJ)
 	$(LINK) /OUT:./bin/$(TEST) $(TESTOBJ)
 
-obj/newton.obj: ./src/newton.cpp $(INC)
-	$(CXX) $(FLAGS) ./src/newton.cpp
+obj/linalg.obj: ./src/linalg.cpp $(INC)
+	$(CXX) $(FLAGS) ./src/linalg.cpp
 
 obj/mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/mandelbrot.cpp
+
+obj/newton.obj: ./src/newton.cpp $(INC)
+	$(CXX) $(FLAGS) ./src/newton.cpp
 
 obj/test.obj: ./test/test.cpp $(INC) $(TESTINC)
   $(CXX) $(TESTFLAGS) ./test/test.cpp
