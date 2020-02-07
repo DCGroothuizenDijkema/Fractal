@@ -25,6 +25,11 @@ double **initialise_companion_matrix(const int degree)
   }
 }
 
+void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree)
+{
+  for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree)=*(coeffs+itr); }
+}
+
 void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree)
 {
 }
