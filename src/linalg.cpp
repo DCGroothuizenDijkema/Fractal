@@ -23,6 +23,7 @@ double **initialise_companion_matrix(const int degree)
   {
     for (int jtr=0;jtr<degree-1;++jtr) { *(*(mat+itr)+jtr)=1.; }
   }
+  return mat;
 }
 
 void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree)
