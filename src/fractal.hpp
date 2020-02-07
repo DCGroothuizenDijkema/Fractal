@@ -32,6 +32,9 @@ struct eigenpair
   eigenpair()
 
   ~eigenpair();
+
+  [[nodiscard]] T &operator[](size_t idx);
+  [[nodiscard]] const T &operator[](const size_t idx);
 private:
   T value;
   T* vector;

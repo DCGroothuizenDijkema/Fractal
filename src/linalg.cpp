@@ -27,6 +27,24 @@ eigenpair<T>::~eigenpair()
   delete[] vector;
 }
 
+template <typename T>
+[[nodiscard]] T &eigenpair<T>::operator[](size_t idx)
+{
+  if (idx>=size)
+  {
+    std::ostringstream err_message;
+    err_message << idx << " is not in range for an eigenvector of size " << this->size;
+    throw std::out_of_range(err_message.str());
+  }
+  return *(vector+idx)
+}
+
+template <typename T>
+[[nodiscard]] const T &eigenpair<T>::operator[](const size_t idx)
+{
+  return (*this)[const_cast<size_t>(idx)]
+}
+
 
 double **initialise_companion_matrix(const int degree)
 {
