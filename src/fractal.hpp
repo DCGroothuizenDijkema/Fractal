@@ -59,11 +59,6 @@ inline std::vector<int> iteration_limits(const int num_threads, const int yresol
   return increments;
 }
 
-template <typename T>
-T dot(T const * const vector_one, T const * const vector_two, const size_t size);
-template <typename T>
-void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size);
-
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
@@ -84,6 +79,20 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
 
 void initialise_companion_matrix(double * const * const mat, const int degree);
 void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree);
-void __declspec(dllexport) roots(double const * const coeffs, const int degree);
+void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree);
+
+template <typename T>
+inline T __declspec(dllexport) dot(T const * const vector_one, T const * const vector_two, const size_t size)
+{
+  T dot_product=T();
+  for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
+  return dot_product;
+}
+
+template <typename T>
+inline void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size)
+{
+  for (int itr=0;itr<size;++itr) { *(out+itr)=dot(*(mat+itr),vector,size); }
+}
 
 #endif // FRACTAL_H__

@@ -69,5 +69,56 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
       delete[] mat;
     }
   }
+
+  BOOST_AUTO_TEST_CASE(dot_product)
+  {
+    // variable setup
+    const int degree=3;
+    double **mat=new double*[degree];
+    for (int itr=0;itr<degree;++itr) { *(mat+itr)=new double[degree]; }
+    double *vec_one=new double[degree];
+    double *vec_two=new double[degree];
+
+    // make a unit matrix
+    for (int itr=0;itr<degree;++itr) { std::fill(*(mat+itr),*(mat+itr)+degree,0); }
+    **mat=1;
+    *(*(mat+1)+1)=1;
+    *(*(mat+2)+2)=1;
+
+    std::iota(vec_one,vec_one+degree,0);
+    dot(mat,vec_one,vec_two,degree);
+
+    BOOST_CHECK(*(vec_two+0)==0);
+    BOOST_CHECK(*(vec_two+1)==1);
+    BOOST_CHECK(*(vec_two+2)==2);
+
+    *(*(mat)+2)=-2;
+    *(*(mat+2))=-2;
+    dot(mat,vec_one,vec_two,degree);
+
+    BOOST_CHECK(*(vec_two+0)==-4);
+    BOOST_CHECK(*(vec_two+1)==1);
+    BOOST_CHECK(*(vec_two+2)==2);
+
+    for (int itr=0;itr<degree;++itr) { std::iota(*(mat+itr),*(mat+itr)+degree,itr); }
+
+    for (int itr=0;itr<12;++itr)
+    {
+      std::fill(vec_one,vec_one+degree,itr);
+      std::fill(vec_two,vec_two+degree,itr);
+      BOOST_CHECK(dot<double>(vec_one,vec_two,degree)==3*itr*itr);
+
+      dot(mat,vec_one,vec_two,degree);
+      const int init=3*itr,step=init;
+      BOOST_CHECK(*(vec_two+0)==init);
+      BOOST_CHECK(*(vec_two+1)==init+step);
+      BOOST_CHECK(*(vec_two+2)==init+2*step);
+    }
+
+    delete[] vec_one;
+    delete[] vec_two;
+    for (int itr=0;itr<degree;++itr) { delete[] *(mat+itr); }
+    delete[] mat;
+  }
 BOOST_AUTO_TEST_SUITE_END()
 } // namespace LinalgTesting
