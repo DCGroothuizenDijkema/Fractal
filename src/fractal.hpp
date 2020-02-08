@@ -29,12 +29,19 @@ struct eigenpair
 {
   eigenpair(const size_t size);
   eigenpair(const T value, const size_t size);
-  eigenpair()
+  eigenpair(const eigenpair &other);
+  eigenpair(eigenpair &&other);
 
   ~eigenpair();
 
+  // assignment
+  eigenpair &operator=(eigenpair other);
+  // getters and setters
   [[nodiscard]] T &operator[](size_t idx);
   [[nodiscard]] const T &operator[](const size_t idx);
+
+  // swap
+  friend void swap(eigenpair& first, eigenpair& second) noexcept;
 private:
   T value;
   T* vector;

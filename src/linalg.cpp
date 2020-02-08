@@ -22,9 +22,28 @@ eigenpair<T>::eigenpair(const T value, const size_t size) : eigenpair(size), val
 }
 
 template <typename T>
+eigenpair<T>::eigenpair(const eigenpair<T> &other) : eigenpair(other.value,other.size)
+{
+  std::copy(other.vector,other.vector+other.size,this->vector);
+}
+
+template <typename T>
+eigenpair<T>::eigenpair(eigenpair<T> &&other) : eigenpair(other.value,other.size)
+{
+  swap(*this,other)
+}
+
+template <typename T>
 eigenpair<T>::~eigenpair()
 {
   delete[] vector;
+}
+
+template <typename T>
+eigenpair<T> &eigenpair<T>::operator=(eigenpair<T> other)
+{
+  swap(*this,other);
+  return *this;
 }
 
 template <typename T>
@@ -43,6 +62,14 @@ template <typename T>
 [[nodiscard]] const T &eigenpair<T>::operator[](const size_t idx)
 {
   return (*this)[const_cast<size_t>(idx)]
+}
+
+template <typename T>
+void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
+{
+  std::swap(first.value,second.value);
+  std::swap(first.vector,second.vector);
+  std::swap(first.size,second.size);
 }
 
 
