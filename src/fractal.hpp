@@ -34,6 +34,9 @@ struct eigenpair
 
   ~eigenpair();
 
+  T norm();
+  T squared_norm();
+
   // assignment
   eigenpair &operator=(eigenpair other);
   // getters and setters

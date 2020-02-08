@@ -40,6 +40,18 @@ eigenpair<T>::~eigenpair()
 }
 
 template <typename T>
+T eigenpair<T>::norm()
+{
+  return std::sqrt(this->squared_norm());
+}
+
+template <typename T>
+T eigenpair<T>::squared_norm()
+{
+  return dot(this->vector,this->vector,this->size);
+}
+
+template <typename T>
 eigenpair<T> &eigenpair<T>::operator=(eigenpair<T> other)
 {
   swap(*this,other);
