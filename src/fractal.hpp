@@ -64,7 +64,7 @@ struct eigenpair
   }
   T squared_norm(void)
   {
-    return dot(this->vector,this->vector,this->size);
+    return dot<T,T,T>(this->vector,this->vector,this->size);
   }
   void normalise(void)
   {
@@ -135,25 +135,25 @@ inline void initialise_companion_matrix(T * const * const mat, const int degree)
   for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
 }
 
-template <typename T>
-inline void assign_companion_matrix(T * const * const mat, const T * const coeffs, const int degree)
+template <typename T, typename U>
+inline void assign_companion_matrix(T * const * const mat, const U * const coeffs, const int degree)
 {
   for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree-1)=*(coeffs+itr); }
 }
 
 
-template <typename T>
-inline T dot(T const * const vector_one, T const * const vector_two, const size_t size)
+template <typename VecT, typename VecU, typename Scalar>
+inline Scalar dot(const VecT * const vector_one, const VecU * const vector_two, const size_t size)
 {
-  T dot_product=T();
+  Scalar dot_product=Scalar();
   for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
   return dot_product;
 }
 
-template <typename T>
-inline void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size)
+template <typename Mat, typename VecIn, typename VecOut>
+inline void dot(const Mat * const * const mat, const VecIn * const vector, VecOut * const out, const size_t size)
 {
-  for (int itr=0;itr<size;++itr) { *(out+itr)=dot(*(mat+itr),vector,size); }
+  for (int itr=0;itr<size;++itr) { *(out+itr)=dot<Mat,VecIn,VecOut>(*(mat+itr),vector,size); }
 }
 
 
@@ -186,8 +186,6 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 
-void initialise_companion_matrix(std::complex<double> * const * const mat, const int degree);
-void assign_companion_matrix(std::complex<double> * const * const mat, double const * const coeffs, const int degree);
 eigenpair<std::complex<double>> power_iteration(std::complex<double> const * const * const mat, std::complex<double> const * const vec
   , const size_t size, const double tol, const int max_itr);
 void deflate(std::complex<double> * const * const mat, const eigenpair<std::complex<double>> &pair);
