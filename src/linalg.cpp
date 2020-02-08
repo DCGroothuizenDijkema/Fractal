@@ -84,6 +84,18 @@ template <typename T>
 }
 
 template <typename T>
+eigenpair<T>::operator scalar_type() const noexcept
+{
+  return this->value;
+}
+
+template <typename T>
+[[nodiscard]] typename eigenpair<T>::scalar_type eigenpair<T>::operator()() const noexcept
+{
+  return this->value;
+}
+
+template <typename T>
 void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
 {
   std::swap(first.value,second.value);

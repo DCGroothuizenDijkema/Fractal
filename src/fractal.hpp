@@ -27,6 +27,8 @@
 template <typename T>
 struct eigenpair
 {
+  using scalar_type=T;
+
   eigenpair(const size_t size);
   eigenpair(const T value, const size_t size);
   eigenpair(const eigenpair &other);
@@ -43,6 +45,8 @@ struct eigenpair
   // getters and setters
   [[nodiscard]] T &operator[](size_t idx);
   [[nodiscard]] const T &operator[](const size_t idx);
+  operator scalar_type() const noexcept;
+  [[nodiscard]] scalar_type operator()() const noexcept;
 
   // swap
   friend void swap(eigenpair& first, eigenpair& second) noexcept;
