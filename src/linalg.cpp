@@ -11,11 +11,6 @@
 
 #include <fractal.hpp>
 
-void assign_companion_matrix(std::complex<double> * const * const mat, double const * const coeffs, const int degree)
-{
-  for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree-1)=*(coeffs+itr); }
-}
-
 eigenpair<std::complex<double>> power_iteration(std::complex<double> const * const * const mat, std::complex<double> const * const vec
   , const size_t size, const double tol, const int max_itr)
 {

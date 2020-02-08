@@ -127,7 +127,7 @@ inline void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
 
 
 template <typename T>
-void initialise_companion_matrix(T * const * const mat, const int degree)
+inline void initialise_companion_matrix(T * const * const mat, const int degree)
 {
   if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
   
@@ -135,9 +135,15 @@ void initialise_companion_matrix(T * const * const mat, const int degree)
   for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
 }
 
+template <typename T>
+inline void assign_companion_matrix(T * const * const mat, const T * const coeffs, const int degree)
+{
+  for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree-1)=*(coeffs+itr); }
+}
+
 
 template <typename T>
-inline T __declspec(dllexport) dot(T const * const vector_one, T const * const vector_two, const size_t size)
+inline T dot(T const * const vector_one, T const * const vector_two, const size_t size)
 {
   T dot_product=T();
   for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
