@@ -139,8 +139,11 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 
-void initialise_companion_matrix(double * const * const mat, const int degree);
-void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree);
+void initialise_companion_matrix(std::complex<double> * const * const mat, const int degree);
+void assign_companion_matrix(std::complex<double> * const * const mat, double const * const coeffs, const int degree);
+eigenpair<std::complex<double>> power_iteration(std::complex<double> const * const * const mat, std::complex<double> const * const vec
+  , const size_t size, const double tol);
+void deflate(std::complex<double> * const * const mat, const eigenpair<std::complex<double>> &pair);
 void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree);
 
 template <typename T>
