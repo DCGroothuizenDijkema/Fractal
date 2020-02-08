@@ -46,6 +46,7 @@ struct eigenpair
   [[nodiscard]] T &operator[](size_t idx);
   [[nodiscard]] const T &operator[](const size_t idx);
   operator scalar_type() const noexcept;
+  [[nodiscard]] scalar_type &operator()();
   [[nodiscard]] scalar_type operator()() const noexcept;
 
   // swap

@@ -90,6 +90,12 @@ eigenpair<T>::operator scalar_type() const noexcept
 }
 
 template <typename T>
+[[nodiscard]] typename eigenpair<T>::scalar_type &eigenpair<T>::operator()()
+{
+  return this->value;
+}
+
+template <typename T>
 [[nodiscard]] typename eigenpair<T>::scalar_type eigenpair<T>::operator()() const noexcept
 {
   return this->value;
