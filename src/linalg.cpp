@@ -25,8 +25,30 @@ void assign_companion_matrix(std::complex<double> * const * const mat, double co
 }
 
 eigenpair<std::complex<double>> power_iteration(std::complex<double> const * const * const mat, std::complex<double> const * const vec
-  , const size_t size, const double tol)
+  , const size_t size, const double tol, const int max_itr)
 {
+  double delta;
+  int itr=0;
+  eigenpair<std::complex<double>> pair(vec,std::sqrt(dot(vec,vec,size)),size);
+  pair.normalise();
+  pair()=pair.norm();
+
+  do
+  {
+    std::complex<double> prev_value=std::complex<double>(pair);
+    // update guess
+    std::complex<double> *product=new std::complex<double>[size];
+    dot(mat,*pair,product,size);
+    for (int jtr=0;jtr<size;++jtr) { pair[jtr]=*(product+jtr); }
+    // normalise and update eigenvalue
+    pair.normalise();
+    pair()=pair.norm();
+    // compute convergence
+    delta=(std::norm(pair())-std::norm(prev_value))/(1+std::norm(pair()));
+    if (itr==max_itr) { throw convergence_error(); }
+  } while (delta>=tol);
+
+  return pair;
 }
 
 void deflate(std::complex<double> * const * const mat, const eigenpair<std::complex<double>> &pair)
