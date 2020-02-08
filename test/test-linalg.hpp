@@ -20,8 +20,8 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
   BOOST_AUTO_TEST_CASE(companion_matrix)
   {
     const int degree=2;
-    double **mat=new double*[degree];
-    for (int itr=0;itr<degree;++itr) { *(mat+itr)=new double[degree]; }
+    std::complex<double> **mat=new std::complex<double>*[degree];
+    for (int itr=0;itr<degree;++itr) { *(mat+itr)=new std::complex<double>[degree]; }
 
     BOOST_CHECK_THROW(initialise_companion_matrix(mat,-1),std::invalid_argument);
     BOOST_CHECK_THROW(initialise_companion_matrix(mat,0),std::invalid_argument);
@@ -32,8 +32,8 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
 
     for (int degree=2;degree<12;++degree)
     {
-      double **mat=new double*[degree];
-      for (int itr=0;itr<degree;++itr) { *(mat+itr)=new double[degree]; }
+      std::complex<double> **mat=new std::complex<double>*[degree];
+      for (int itr=0;itr<degree;++itr) { *(mat+itr)=new std::complex<double>[degree]; }
       initialise_companion_matrix(mat,degree);
 
       for (int itr=0;itr<degree;++itr)
@@ -51,8 +51,8 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     
     for (int degree=2;degree<12;++degree)
     {
-      double **mat=new double*[degree];
-      for (int itr=0;itr<degree;++itr) { *(mat+itr)=new double[degree]; }
+      std::complex<double> **mat=new std::complex<double>*[degree];
+      for (int itr=0;itr<degree;++itr) { *(mat+itr)=new std::complex<double>[degree]; }
       initialise_companion_matrix(mat,degree);
 
       double *coeffs=new double[degree];
