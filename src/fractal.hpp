@@ -29,28 +29,79 @@ struct eigenpair
 {
   using scalar_type=T;
 
-  eigenpair(const size_t size);
-  eigenpair(const T value, const size_t size);
-  eigenpair(const eigenpair &other);
-  eigenpair(eigenpair &&other);
+  eigenpair(const size_t size) : size(size), vector(new T[size]), value(T())
+  {
+    std::fill(this->vector,this->vector+this->size,T());
+  }
+  eigenpair(const T value, const size_t size) : eigenpair(size)
+  {
+    this->value=value;
+  }
+  eigenpair(const T * const vector, const T value, const size_t size) : eigenpair(value,size)
+  {
+    std::copy(vector,vector+size,this->vector);
+  }
 
-  ~eigenpair();
+  eigenpair(const eigenpair &other) : eigenpair(other.value,other.size)
+  {
+    std::copy(other.vector,other.vector+other.size,this->vector);
+  }
+  eigenpair(eigenpair &&other) : eigenpair(other.value,other.size)
+  {
+    swap(*this,other);
+  }
 
-  T norm(void);
-  T squared_norm(void);
-  void normalise(void);
+  ~eigenpair()
+  {
+    delete[] vector;
+  }
+
+  T norm(void)
+  {
+    return std::sqrt(this->squared_norm());
+  }
+  T squared_norm(void)
+  {
+    return dot(this->vector,this->vector,this->size);
+  }
+  void normalise(void)
+  {
+    T norm=this->norm();
+    for (int itr=0;itr<this->size;++itr) { *(this->vector+itr)/=norm; }
+  }
 
   // assignment
-  eigenpair &operator=(eigenpair other);
+  eigenpair &operator=(eigenpair other)
+  {
+    swap(*this,other);
+    return *this;
+  }
   // getters and setters
-  [[nodiscard]] T &operator[](size_t idx);
-  [[nodiscard]] const T &operator[](const size_t idx);
-  operator scalar_type() const noexcept;
-  [[nodiscard]] scalar_type &operator()();
-  [[nodiscard]] scalar_type operator()() const noexcept;
+  [[nodiscard]] T &operator[](size_t idx)
+  {
+    if (idx>=size)
+    {
+      std::ostringstream err_message;
+      err_message << idx << " is not in range for an eigenvector of size " << this->size;
+      throw std::out_of_range(err_message.str());
+    }
+    return *(vector+idx);
+  }
+  operator scalar_type() const noexcept
+  {
+    return this->value;
+  }
+  [[nodiscard]] scalar_type &operator()()
+  {
+    return this->value;
+  }
+  [[nodiscard]] scalar_type operator()() const noexcept
+  {
+    return this->value;
+  }
 
   // swap
-  friend void swap(eigenpair& first, eigenpair& second) noexcept;
+  friend inline void swap(eigenpair& first, eigenpair& second) noexcept;
 private:
   T value;
   T* vector;
@@ -102,6 +153,14 @@ template <typename T>
 inline void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size)
 {
   for (int itr=0;itr<size;++itr) { *(out+itr)=dot(*(mat+itr),vector,size); }
+}
+
+template <typename T>
+inline void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
+{
+  std::swap(first.value,second.value);
+  std::swap(first.vector,second.vector);
+  std::swap(first.size,second.size);
 }
 
 #endif // FRACTAL_H__
