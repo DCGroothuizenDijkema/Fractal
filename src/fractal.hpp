@@ -80,7 +80,7 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 
-double **initialise_companion_matrix(const int degree);
+void initialise_companion_matrix(double * const * const mat, const int degree);
 void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree);
 void __declspec(dllexport) roots(double const * const coeffs, const int degree);
 

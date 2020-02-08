@@ -81,17 +81,15 @@ T dot(T const * const vector_one, T const * const vector_two, const size_t size)
 }
 
 
-double **initialise_companion_matrix(const int degree)
+void initialise_companion_matrix(double * const * const mat, const int degree)
 {
   if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
-  double **mat=new double*[degree];
+  
   for (int itr=0;itr<degree;++itr)
   {
-    *(mat+itr)=new double[degree];
     std::fill(*(mat+itr),*(mat+itr)+degree,0.);
   }
   for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
-  return mat;
 }
 
 void assign_companion_matrix(double * const * const mat, double const * const coeffs, const int degree)
