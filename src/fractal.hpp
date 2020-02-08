@@ -24,6 +24,8 @@
 #include <tuple>
 #include <vector>
 
+class convergence_error : public std::exception {};
+
 template <typename T>
 struct eigenpair
 {
@@ -99,6 +101,11 @@ struct eigenpair
   {
     return this->value;
   }
+  // indirection
+  const scalar_type * const operator*()
+  {
+    return vector;
+  }
 
   // swap
   template<typename U>
@@ -106,7 +113,7 @@ struct eigenpair
 
 private:
   T value;
-  T* vector;
+  T *vector;
   size_t size;
 };
 
