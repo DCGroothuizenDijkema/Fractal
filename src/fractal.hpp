@@ -101,7 +101,9 @@ struct eigenpair
   }
 
   // swap
-  friend inline void swap(eigenpair& first, eigenpair& second) noexcept;
+  template<typename U>
+  friend inline void swap(eigenpair<U> &first, eigenpair<U> &second) noexcept;
+
 private:
   T value;
   T* vector;
