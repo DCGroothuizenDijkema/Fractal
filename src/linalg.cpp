@@ -40,15 +40,22 @@ eigenpair<T>::~eigenpair()
 }
 
 template <typename T>
-T eigenpair<T>::norm()
+T eigenpair<T>::norm(void)
 {
   return std::sqrt(this->squared_norm());
 }
 
 template <typename T>
-T eigenpair<T>::squared_norm()
+T eigenpair<T>::squared_norm(void)
 {
   return dot(this->vector,this->vector,this->size);
+}
+
+template <typename T>
+void eigenpair<T>::normalise(void)
+{
+  T norm=this->norm();
+  for (int itr=0;itr<this->size;++itr) { *(this->vector+itr)/=norm; }
 }
 
 template <typename T>

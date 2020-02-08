@@ -34,8 +34,9 @@ struct eigenpair
 
   ~eigenpair();
 
-  T norm();
-  T squared_norm();
+  T norm(void);
+  T squared_norm(void);
+  void normalise(void);
 
   // assignment
   eigenpair &operator=(eigenpair other);
