@@ -139,10 +139,21 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     len=7;
     double *vec=new double[len];
     std::iota(vec,vec+len,0);
-
     eigenpair<double> pair_three(vec,1.618,len);
     BOOST_CHECK(pair_three()==1.618);
     for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_three[itr]==*(vec+itr)); }
+
+    eigenpair<double> pair_four(pair_three);
+    BOOST_CHECK(pair_four()==1.618);
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_four[itr]==*(vec+itr)); }
+
+    eigenpair<double> pair_five=pair_three;
+    BOOST_CHECK(pair_five()==1.618);
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_five[itr]==*(vec+itr)); }
+
+    eigenpair<double> pair_six=std::move(pair_three);
+    BOOST_CHECK(pair_six()==1.618);
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_six[itr]==*(vec+itr)); }
   }
 BOOST_AUTO_TEST_SUITE_END()
 } // namespace LinalgTesting
