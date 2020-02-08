@@ -59,6 +59,9 @@ inline std::vector<int> iteration_limits(const int num_threads, const int yresol
   return increments;
 }
 
+template <typename T>
+T dot(T const * const vector_one, T const * const vector_two, const size_t size);
+
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
