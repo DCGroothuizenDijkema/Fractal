@@ -12,7 +12,7 @@
 #include <fractal.hpp>
 
 template <typename T>
-eigenpair<T>::eigenpair(const size_t size) : size(size), vector(new T[size])
+eigenpair<T>::eigenpair(const size_t size) : size(size), vector(new T[size]), value(T())
 {
 }
 
