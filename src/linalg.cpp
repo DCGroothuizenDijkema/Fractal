@@ -30,8 +30,9 @@ eigenpair<std::complex<double>> power_iteration(std::complex<double> const * con
   double delta;
   int itr=0;
   eigenpair<std::complex<double>> pair(vec,std::sqrt(dot(vec,vec,size)),size);
-  pair.normalise();
+
   pair()=pair.norm();
+  pair.normalise();
 
   do
   {
@@ -41,12 +42,12 @@ eigenpair<std::complex<double>> power_iteration(std::complex<double> const * con
     dot(mat,*pair,product,size);
     for (int jtr=0;jtr<size;++jtr) { pair[jtr]=*(product+jtr); }
     // normalise and update eigenvalue
-    pair.normalise();
     pair()=pair.norm();
+    pair.normalise();
     // compute convergence
     delta=(std::norm(pair())-std::norm(prev_value))/(1+std::norm(pair()));
     if (itr==max_itr) { throw convergence_error(); }
-  } while (delta>=tol);
+  } while (fabs(delta)>=tol);
 
   return pair;
 }
