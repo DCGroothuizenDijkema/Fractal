@@ -11,14 +11,6 @@
 
 #include <fractal.hpp>
 
-void initialise_companion_matrix(std::complex<double> * const * const mat, const int degree)
-{
-  if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
-  
-  for (int itr=0;itr<degree;++itr) { std::fill(*(mat+itr),*(mat+itr)+degree,0.); }
-  for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
-}
-
 void assign_companion_matrix(std::complex<double> * const * const mat, double const * const coeffs, const int degree)
 {
   for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree-1)=*(coeffs+itr); }
@@ -45,7 +37,7 @@ eigenpair<std::complex<double>> power_iteration(std::complex<double> const * con
     pair()=pair.norm();
     pair.normalise();
     // compute convergence
-    delta=(std::norm(pair())-std::norm(prev_value))/(1+std::norm(pair()));
+    delta=(std::abs(pair())-std::norm(prev_value))/(1+std::norm(pair()));
     if (itr==max_itr) { throw convergence_error(); }
   } while (fabs(delta)>=tol);
 

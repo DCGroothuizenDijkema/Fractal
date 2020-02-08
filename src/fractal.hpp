@@ -117,6 +117,40 @@ private:
   size_t size;
 };
 
+template <typename T>
+inline void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
+{
+  std::swap(first.value,second.value);
+  std::swap(first.vector,second.vector);
+  std::swap(first.size,second.size);
+}
+
+
+template <typename T>
+void initialise_companion_matrix(T * const * const mat, const int degree)
+{
+  if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
+  
+  for (int itr=0;itr<degree;++itr) { std::fill(*(mat+itr),*(mat+itr)+degree,0.); }
+  for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
+}
+
+
+template <typename T>
+inline T __declspec(dllexport) dot(T const * const vector_one, T const * const vector_two, const size_t size)
+{
+  T dot_product=T();
+  for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
+  return dot_product;
+}
+
+template <typename T>
+inline void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size)
+{
+  for (int itr=0;itr<size;++itr) { *(out+itr)=dot(*(mat+itr),vector,size); }
+}
+
+
 inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
 {
   const int span=yresolution/num_threads;
@@ -152,27 +186,5 @@ eigenpair<std::complex<double>> power_iteration(std::complex<double> const * con
   , const size_t size, const double tol, const int max_itr);
 void deflate(std::complex<double> * const * const mat, const eigenpair<std::complex<double>> &pair);
 void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree);
-
-template <typename T>
-inline T __declspec(dllexport) dot(T const * const vector_one, T const * const vector_two, const size_t size)
-{
-  T dot_product=T();
-  for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
-  return dot_product;
-}
-
-template <typename T>
-inline void dot(T const * const * const mat, T const * const vector, T * const out, const size_t size)
-{
-  for (int itr=0;itr<size;++itr) { *(out+itr)=dot(*(mat+itr),vector,size); }
-}
-
-template <typename T>
-inline void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
-{
-  std::swap(first.value,second.value);
-  std::swap(first.vector,second.vector);
-  std::swap(first.size,second.size);
-}
 
 #endif // FRACTAL_H__
