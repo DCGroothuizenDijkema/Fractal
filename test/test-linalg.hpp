@@ -137,23 +137,53 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_two[itr]==0.); }
 
     len=7;
-    double *vec=new double[len];
-    std::iota(vec,vec+len,0);
-    eigenpair<double> pair_three(vec,1.618,len);
+    double *vec_one=new double[len];
+    std::iota(vec_one,vec_one+len,0);
+    eigenpair<double> pair_three(vec_one,1.618,len);
     BOOST_CHECK(pair_three()==1.618);
-    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_three[itr]==*(vec+itr)); }
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_three[itr]==*(vec_one+itr)); }
 
     eigenpair<double> pair_four(pair_three);
     BOOST_CHECK(pair_four()==1.618);
-    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_four[itr]==*(vec+itr)); }
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_four[itr]==*(vec_one+itr)); }
 
     eigenpair<double> pair_five=pair_three;
     BOOST_CHECK(pair_five()==1.618);
-    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_five[itr]==*(vec+itr)); }
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_five[itr]==*(vec_one+itr)); }
 
     eigenpair<double> pair_six=std::move(pair_three);
     BOOST_CHECK(pair_six()==1.618);
-    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_six[itr]==*(vec+itr)); }
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_six[itr]==*(vec_one+itr)); }
+
+    pair_six()=2.718;
+    BOOST_CHECK(double(pair_six)==2.718);
+
+    pair_six[1]=-11.924;
+    BOOST_CHECK(pair_six[1]==-11.924);
+
+    for (int itr=1;itr<12;++itr)
+    {
+      double *vec_two=new double[itr];
+      std::fill(vec_two,vec_two+itr,1);
+      eigenpair<double> pair(vec_two,0,itr);
+
+      BOOST_CHECK(pair.norm()==std::sqrt(itr));
+      BOOST_CHECK(pair.squared_norm()==itr);
+    }
+
+    len=4;
+    double *vec_three=new double[len];
+    *vec_three=-1;
+    *(vec_three+1)=2;
+    *(vec_three+2)=5;
+    *(vec_three+3)=-2;
+    eigenpair<double> pair_seven(vec_three,0.,len);
+
+    BOOST_CHECK(pair_seven.norm()==std::sqrt(34));
+    BOOST_CHECK(pair_seven.squared_norm()==34);
+
+    pair_seven.normalise();
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_seven[itr]==*(vec_three+itr)/std::sqrt(34)); }
   }
 BOOST_AUTO_TEST_SUITE_END()
 } // namespace LinalgTesting
