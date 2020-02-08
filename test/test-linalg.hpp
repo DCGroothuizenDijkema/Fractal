@@ -120,5 +120,29 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     for (int itr=0;itr<degree;++itr) { delete[] *(mat+itr); }
     delete[] mat;
   }
+
+  BOOST_AUTO_TEST_CASE(eigen)
+  {
+    int len=5;
+    eigenpair<double> pair_one(len);
+
+    BOOST_CHECK(pair_one()==0.);
+    BOOST_CHECK(double(pair_one)==0.);
+
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_one[itr]==0.); }
+
+    len=3;
+    eigenpair<double> pair_two(3.14,len);
+    BOOST_CHECK(pair_two()==3.14);
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_two[itr]==0.); }
+
+    len=7;
+    double *vec=new double[len];
+    std::iota(vec,vec+len,0);
+
+    eigenpair<double> pair_three(vec,1.618,len);
+    BOOST_CHECK(pair_three()==1.618);
+    for (int itr=0;itr<len;++itr) { BOOST_CHECK(pair_three[itr]==*(vec+itr)); }
+  }
 BOOST_AUTO_TEST_SUITE_END()
 } // namespace LinalgTesting
