@@ -39,7 +39,8 @@ struct eigenpair
   {
     this->value=value;
   }
-  eigenpair(const T * const vector, const T value, const size_t size) : eigenpair(value,size)
+  template <typename U>
+  eigenpair(const U * const vector, const T value, const size_t size) : eigenpair(value,size)
   {
     std::copy(vector,vector+size,this->vector);
   }
@@ -186,9 +187,6 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 
-eigenpair<std::complex<double>> power_iteration(std::complex<double> const * const * const mat, std::complex<double> const * const vec
-  , const size_t size, const double tol, const int max_itr);
-void deflate(std::complex<double> * const * const mat, const eigenpair<std::complex<double>> &pair);
 void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree);
 
 #endif // FRACTAL_H__
