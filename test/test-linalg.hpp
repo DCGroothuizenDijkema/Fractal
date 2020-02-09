@@ -86,7 +86,6 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     *(*(mat+2)+2)=1;
 
     std::iota(vec_one,vec_one+degree,0);
-    dot(mat,vec_one,vec_two,degree);
 
     BOOST_CHECK(*(vec_two+0)==0);
     BOOST_CHECK(*(vec_two+1)==1);
@@ -106,7 +105,7 @@ BOOST_AUTO_TEST_SUITE(test_linalg)
     {
       std::fill(vec_one,vec_one+degree,itr);
       std::fill(vec_two,vec_two+degree,itr);
-      BOOST_CHECK(dot<double>(vec_one,vec_two,degree)==3*itr*itr);
+      BOOST_CHECK((dot<double,double,double>(vec_one,vec_two,degree)==3*itr*itr));
 
       dot(mat,vec_one,vec_two,degree);
       const int init=3*itr,step=init;
