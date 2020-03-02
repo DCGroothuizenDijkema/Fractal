@@ -26,138 +26,6 @@
 
 class convergence_error : public std::exception {};
 
-template <typename T>
-struct eigenpair
-{
-  using scalar_type=T;
-
-  eigenpair(const size_t size) : size(size), vector(new T[size]), value(T())
-  {
-    std::fill(this->vector,this->vector+this->size,T());
-  }
-  eigenpair(const T value, const size_t size) : eigenpair(size)
-  {
-    this->value=value;
-  }
-  template <typename U>
-  eigenpair(const U * const vector, const T value, const size_t size) : eigenpair(value,size)
-  {
-    std::copy(vector,vector+size,this->vector);
-  }
-
-  eigenpair(const eigenpair &other) : eigenpair(other.value,other.size)
-  {
-    std::copy(other.vector,other.vector+other.size,this->vector);
-  }
-  eigenpair(eigenpair &&other) : eigenpair(other.value,other.size)
-  {
-    swap(*this,other);
-  }
-
-  ~eigenpair()
-  {
-    delete[] vector;
-  }
-
-  T norm(void)
-  {
-    return std::sqrt(this->squared_norm());
-  }
-  T squared_norm(void)
-  {
-    return dot<T,T,T>(this->vector,this->vector,this->size);
-  }
-  void normalise(void)
-  {
-    T norm=this->norm();
-    for (int itr=0;itr<this->size;++itr) { *(this->vector+itr)/=norm; }
-  }
-
-  // assignment
-  eigenpair &operator=(eigenpair other)
-  {
-    swap(*this,other);
-    return *this;
-  }
-  // getters and setters
-  [[nodiscard]] T &operator[](size_t idx)
-  {
-    if (idx>=size)
-    {
-      std::ostringstream err_message;
-      err_message << idx << " is not in range for an eigenvector of size " << this->size;
-      throw std::out_of_range(err_message.str());
-    }
-    return *(vector+idx);
-  }
-  operator scalar_type() const noexcept
-  {
-    return this->value;
-  }
-  [[nodiscard]] scalar_type &operator()()
-  {
-    return this->value;
-  }
-  [[nodiscard]] scalar_type operator()() const noexcept
-  {
-    return this->value;
-  }
-  // indirection
-  const scalar_type * const operator*()
-  {
-    return vector;
-  }
-
-  // swap
-  template<typename U>
-  friend inline void swap(eigenpair<U> &first, eigenpair<U> &second) noexcept;
-
-private:
-  T value;
-  T *vector;
-  size_t size;
-};
-
-template <typename T>
-inline void swap(eigenpair<T> &first, eigenpair<T> &second) noexcept
-{
-  std::swap(first.value,second.value);
-  std::swap(first.vector,second.vector);
-  std::swap(first.size,second.size);
-}
-
-
-template <typename T>
-inline void initialise_companion_matrix(T * const * const mat, const int degree)
-{
-  if (degree<2) { throw std::invalid_argument("`degree` must be greater than or equal to 2"); }
-  
-  for (int itr=0;itr<degree;++itr) { std::fill(*(mat+itr),*(mat+itr)+degree,0.); }
-  for (int itr=1,jtr=0;itr<degree,jtr<degree-1;++itr,++jtr) { *(*(mat+itr)+jtr)=1.; }
-}
-
-template <typename T, typename U>
-inline void assign_companion_matrix(T * const * const mat, const U * const coeffs, const int degree)
-{
-  for (int itr=0;itr<degree;++itr) { *(*(mat+itr)+degree-1)=*(coeffs+itr); }
-}
-
-
-template <typename VecT, typename VecU, typename Scalar>
-inline Scalar dot(const VecT * const vector_one, const VecU * const vector_two, const size_t size)
-{
-  Scalar dot_product=Scalar();
-  for (int itr=0;itr<size;++itr) { dot_product+=*(vector_one+itr)**(vector_two+itr); }
-  return dot_product;
-}
-
-template <typename Mat, typename VecIn, typename VecOut>
-inline void dot(const Mat * const * const mat, const VecIn * const vector, VecOut * const out, const size_t size)
-{
-  for (int itr=0;itr<size;++itr) { *(out+itr)=dot<Mat,VecIn,VecOut>(*(mat+itr),vector,size); }
-}
-
-
 inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
 {
   const int span=yresolution/num_threads;
@@ -168,6 +36,7 @@ inline std::vector<int> iteration_limits(const int num_threads, const int yresol
 
   return increments;
 }
+
 
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
