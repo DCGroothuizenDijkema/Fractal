@@ -11,7 +11,7 @@
 
 #include <fractal.hpp>
 
-std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const std::complex<double> &x, double * const coeffs
+std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const std::complex<double> &x, double const * const coeffs
   , const int degree)
 {
   std::complex<double> p=*(coeffs+degree),p_prime=0;
@@ -25,7 +25,7 @@ std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const 
   return std::make_pair(p,p_prime);
 }
 
-std::complex<double> newton_root(double * const coeffs, int * const itr_taken, std::complex<double> x, const int degree
+std::complex<double> newton_root( double const * const coeffs, int * const itr_taken, std::complex<double> x, const int degree
   , const int max_itr, const double tol)
 {
   std::complex<double> init=x; 
@@ -51,7 +51,7 @@ std::complex<double> newton_root(double * const coeffs, int * const itr_taken, s
   return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
 }
 
-void compute_newton_range(double **re, double **im, int **iterations, double * coeffs, const int max_itr, const int degree
+void compute_newton_range(double **re, double **im, int **iterations, double * const coeffs, const int max_itr, const int degree
   , const int xresolution, const int start_itr, const int end_itr, const double startx, const double starty, const double deltax
   , const double deltay, const int total, bool verbose)
 {
@@ -69,7 +69,7 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
   }
 }
 
-void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double * coeffs, const int max_itr
+void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose)
 {
@@ -82,7 +82,7 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   for (int itr=0;itr<increments.size()-1;++itr)
   {
     threads.push_back(std::thread(
-      compute_newton_range,re,im,iterations,coeffs,max_itr,degree,xresolution,increments[itr],increments[itr+1],startx,starty,deltax,deltay
+      compute_newton_range,re,im,iterations,std::ref(coeffs),max_itr,degree,xresolution,increments[itr],increments[itr+1],startx,starty,deltax,deltay
         ,total,num_threads>1 ? false : verbose
     ));
   }
