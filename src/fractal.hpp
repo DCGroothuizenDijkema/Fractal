@@ -24,8 +24,6 @@
 #include <tuple>
 #include <vector>
 
-class convergence_error : public std::exception {};
-
 inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
 {
   const int span=yresolution/num_threads;
@@ -55,7 +53,5 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
 void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double * coeffs, const int max_itr
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
-
-void __declspec(dllexport) roots(double const * const coeffs, double * const roots_re, double * const roots_im, const int degree);
 
 #endif // FRACTAL_H__
