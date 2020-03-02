@@ -15,5 +15,4 @@
 #define BOOST_TEST_MODULE NEWTONTESTING
 #include <boost/test/included/unit_test.hpp>
 
-#include <test-linalg.hpp>
 #include <test-newton.hpp>
