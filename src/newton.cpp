@@ -40,7 +40,6 @@ std::complex<double> newton_root( double const * const coeffs, int * const itr_t
     }
     if (g_x==std::complex<double>(0.,0.))
     {
-      std::cerr << "Zero deriavtive encountered when starting at " << init << std::endl;
       *itr_taken=std::numeric_limits<int>::max();
       return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
     }
@@ -82,8 +81,8 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   for (int itr=0;itr<increments.size()-1;++itr)
   {
     threads.push_back(std::thread(
-      compute_newton_range,re,im,iterations,std::ref(coeffs),max_itr,degree,xresolution,increments[itr],increments[itr+1],startx,starty,deltax,deltay
-        ,total,num_threads>1 ? false : verbose
+      compute_newton_range,re,im,iterations,std::ref(coeffs),max_itr,degree,xresolution,increments[itr],increments[itr+1],startx,starty
+        ,deltax,deltay,total,num_threads>1 ? false : verbose
     ));
   }
 
@@ -98,4 +97,31 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   if (verbose) { std::cout << "Time taken: " << elapsed.count() << "s." << std::endl; }
 
   *limit=std::numeric_limits<int>::max();
+}
+
+void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
+  , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
+{
+  std::vector<std::complex<double>> roots;
+  zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_insert_iterator(roots));
+  
+  for (int itr=0;itr<yresolution;++itr)
+  {
+    for (int jtr=0;jtr<xresolution;++jtr)
+    {
+      if (*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity()||*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity())
+      {
+        *(*(index+itr)+jtr)=-1;
+        continue;
+      }
+      std::complex<double> val(*(*(re+itr)+jtr),*(*(im+itr)+jtr));
+      std::vector<std::complex<double>> diffs;
+      
+      std::transform(std::begin(roots),std::end(roots),std::back_insert_iterator(diffs)
+        ,[val](std::complex<double> root) { return abs(root-val); });
+      *(*(index+itr)+jtr)=static_cast<int>(argmin(diffs
+        ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
+      ));
+    }
+  }
 }

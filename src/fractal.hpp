@@ -47,7 +47,7 @@ OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, Outpu
 }
 
 template <class Container, class Compare>
-std::size_t argmin(const Container &c,Compare comp)
+std::size_t argmin(const Container &c, Compare comp)
 {
   return std::min_element(std::cbegin(c),std::cend(c),comp)-std::cbegin(c);
 }
@@ -70,5 +70,7 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
 void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
   , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
+void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
+  , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution);
 
 #endif // FRACTAL_H__
