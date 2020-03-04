@@ -9,16 +9,13 @@
 // Test file for Newton's fractals
 
 
-#include <random>
-#include <iostream>
-
 #include <fractal.hpp>
 
 namespace NewtonTesting
 {
 BOOST_AUTO_TEST_SUITE(test_newton)
 
-  BOOST_AUTO_TEST_CASE(horners_method)
+  BOOST_AUTO_TEST_CASE(horners_method_testing)
   {
     double *coeffs=new double[1];
     *coeffs=0.;
@@ -101,6 +98,26 @@ BOOST_AUTO_TEST_SUITE(test_newton)
       BOOST_CHECK_CLOSE_FRACTION(result.second.real(),expected_deriv.real(),0.0001);
       BOOST_CHECK_CLOSE_FRACTION(result.second.imag(),expected_deriv.imag(),0.0001);
     }
+  }
+
+  BOOST_AUTO_TEST_CASE(zip_testing)
+  {
+    const int degree=3;
+    double one[degree]={1,2,3},two[degree]={10,11,12};
+    std::vector<std::complex<double>> zipped;
+
+    zip(one,one+degree,two,two+degree,std::back_inserter(zipped));
+
+    BOOST_CHECK(zipped[0]==std::complex<double>(1,10));
+    BOOST_CHECK(zipped[1]==std::complex<double>(2,11));
+    BOOST_CHECK(zipped[2]==std::complex<double>(3,12));
+  }
+
+  BOOST_AUTO_TEST_CASE(argmin_testing)
+  {
+    std::vector<int> test_vec={4,9,1,3,2};
+
+    BOOST_CHECK(argmin(test_vec,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); })==2);
   }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -9,6 +9,10 @@
 // Test file for Newton's fractals
 
 
+#include <iostream>
+#include <iterator>
+#include <random>
+
 // because Microsoft is the worst
 #define NOMINMAX
 
