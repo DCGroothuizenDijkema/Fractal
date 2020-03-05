@@ -106,7 +106,30 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
 
 def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
   ,fig_inches=(12,12),dpi=1200,color_map=None):
-  pass
+  fig,ax=plt.subplots()
+  fig.subplots_adjust(0,0,1,1)
+
+  ax.set_xticks([])
+  ax.set_yticks([])
+  ax.set_xticklabels([])
+  ax.set_yticklabels([])
+  
+  if log:
+    iterations=np.log(iterations)
+    limit=np.log(limit)
+  
+  fig.set_size_inches(fig_inches)
+
+  masked_iterations=np.ma.masked_where(iterations==limit,iterations)
+  if color_map is None:
+    color_map=cm.Spectral_r
+  color_map.set_bad(color='black')
+
+  ax.imshow(masked_iterations,cmap=color_map)
+  if show_fig:
+    plt.show()
+  if save_fig:
+    plt.savefig(file_name,dpi=dpi)
 
 def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
   pass
