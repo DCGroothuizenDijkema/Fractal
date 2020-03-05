@@ -83,7 +83,26 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
-  pass
+  fig,ax=plt.subplots()
+  fig.subplots_adjust(0,0,1,1)
+
+  ax.set_xticks([])
+  ax.set_yticks([])
+  ax.set_xticklabels([])
+  ax.set_yticklabels([])
+  
+  fig.set_size_inches(fig_inches)
+
+  masked_roots=np.ma.masked_where(roots==-1,roots)
+  if color_map is None:
+    color_map=cm.viridis
+  color_map.set_bad(color='black')
+
+  ax.imshow(masked_roots,cmap=color_map)
+  if show_fig:
+    plt.show()
+  if save_fig:
+    plt.savefig(file_name,dpi=dpi)
 
 def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
   ,fig_inches=(12,12),dpi=1200,color_map=None):
