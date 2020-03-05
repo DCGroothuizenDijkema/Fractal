@@ -11,8 +11,10 @@
 
 import ctypes as ct
 import numpy as np
+
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.colors import LinearSegmentedColormap,ListedColormap
 
 from huygens.interf import c_matrix,c_vector,c_pointer
 
@@ -132,7 +134,37 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     plt.savefig(file_name,dpi=dpi)
 
 def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
-  pass
+  fig,ax=plt.subplots()
+  fig.subplots_adjust(0,0,1,1)
+
+  ax.set_xticks([])
+  ax.set_yticks([])
+  ax.set_xticklabels([])
+  ax.set_yticklabels([])
+  
+  fig.set_size_inches(fig_inches)
+
+  unique_roots=np.unique(roots)
+  unique_roots=np.delete(unique_roots,np.where(unique_roots==-1))
+
+  limit_index=np.where(iterations==limit)
+  limit_bool=iterations!=limit
+  iterations=np.log(iterations)
+  
+  v1b=np.ma.masked_array(iterations,roots!=0)
+  v1c=np.ma.masked_array(iterations,roots!=1)
+  v1d=np.ma.masked_array(iterations,roots!=2)
+  v1a=np.ma.masked_array(iterations,limit_bool)
+
+  ax.imshow(v1a,cmap=ListedColormap([0,0,0]))
+  ax.imshow(iterations*v1b,cmap=LinearSegmentedColormap.from_list('cust1',['#f3c8ea','#6f185d']))
+  ax.imshow(iterations*v1c,cmap=LinearSegmentedColormap.from_list('cust2',['#eaf3c8','#5d6f18']))
+  ax.imshow(iterations*v1d,cmap=LinearSegmentedColormap.from_list('cust3',['#c8eaf3','#06161b']))
+
+  if show_fig:
+    plt.show()
+  if save_fig:
+    plt.savefig(file_name,dpi=dpi)
 
 def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
   startx=central_point[0]-x_span/2.
