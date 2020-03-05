@@ -22,7 +22,6 @@
 #include <iostream>
 #include <limits>
 #include <thread>
-#include <tuple>
 #include <vector>
 
 inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
