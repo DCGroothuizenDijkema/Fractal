@@ -187,7 +187,7 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   roots=1j*np.ctypeslib.as_array(act_im)
   roots+=np.ctypeslib.as_array(act_re)
 
-  actuals=np.roots(coeffs)
+  actuals=np.roots(np.flip(coeffs))
   tmp_ind,act_ind=c_matrix(ct.c_int,y_resolution,x_resolution)
   roots_re=c_vector(ct.c_double,len(actuals),np.real(actuals))
   roots_im=c_vector(ct.c_double,len(actuals),np.imag(actuals))
