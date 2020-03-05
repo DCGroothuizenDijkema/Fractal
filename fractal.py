@@ -147,19 +147,15 @@ def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=T
   unique_roots=np.unique(roots)
   unique_roots=np.delete(unique_roots,np.where(unique_roots==-1))
 
-  limit_index=np.where(iterations==limit)
   limit_bool=iterations!=limit
   iterations=np.log(iterations)
-  
-  v1b=np.ma.masked_array(iterations,roots!=0)
-  v1c=np.ma.masked_array(iterations,roots!=1)
-  v1d=np.ma.masked_array(iterations,roots!=2)
-  v1a=np.ma.masked_array(iterations,limit_bool)
 
-  ax.imshow(v1a,cmap=ListedColormap([0,0,0]))
-  ax.imshow(iterations*v1b,cmap=LinearSegmentedColormap.from_list('cust1',['#f3c8ea','#6f185d']))
-  ax.imshow(iterations*v1c,cmap=LinearSegmentedColormap.from_list('cust2',['#eaf3c8','#5d6f18']))
-  ax.imshow(iterations*v1d,cmap=LinearSegmentedColormap.from_list('cust3',['#c8eaf3','#06161b']))
+  no_root=np.ma.masked_array(iterations,limit_bool)
+  ax.imshow(no_root,cmap=ListedColormap([0,0,0]))
+
+  for itr,root in enumerate(unique_roots):
+    masked_roots=np.ma.masked_array(iterations,roots!=root)
+    ax.imshow(iterations*masked_roots,cmap=colors[itr])
 
   if show_fig:
     plt.show()
