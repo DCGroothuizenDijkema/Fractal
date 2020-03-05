@@ -16,7 +16,7 @@ import matplotlib.cm as cm
 
 from huygens.interf import c_matrix,c_vector,c_pointer
 
-__all__=['sample_mandelbrot','plot_mandelbrot']
+__all__=['sample_mandelbrot','plot_mandelbrot','sample_newton','plot_newton','plot_newton_roots','plot_newton_iteration']
 
 # load the lib
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
@@ -24,6 +24,7 @@ _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 # extract the functions
 _sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHHQEAHNNNN_N@Z')
 _sample_newton=getattr(_libc,'?sample_newton@@YAXPEAPEAN0PEAPEAHPEANHHHHHQEAHNNNN_N@Z')
+_assign_roots=getattr(_libc,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
 
 # assign arg and return types
 _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double
@@ -33,6 +34,9 @@ _sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINT
   ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double
   ,ct.c_double,ct.c_bool]
 _sample_newton.restype=None
+_assign_roots.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double))
+  ,ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
+_assign_roots.restype=None
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
@@ -76,3 +80,17 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
 
   del tmp
   return np.flipud(np.ctypeslib.as_array(act)),limit.contents.value
+
+def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
+  ,color_map=None):
+  pass
+
+def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
+  ,fig_inches=(12,12),dpi=1200,color_map=None):
+  pass
+
+def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
+  pass
+
+def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
+  pass
