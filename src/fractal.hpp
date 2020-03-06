@@ -35,7 +35,7 @@ inline std::vector<int> iteration_limits(const int num_threads, const int yresol
   return increments;
 }
 
-template <class InputIt, class OutputIt>
+template <typename InputIt, typename OutputIt>
 OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
 {
   while (first1!=last1&&first2!=last2)
@@ -45,7 +45,7 @@ OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, Outpu
   return out;
 }
 
-template <class Container, class Compare>
+template <typename Container, typename Compare>
 std::size_t argmin(const Container &c, Compare comp)
 {
   return std::min_element(std::cbegin(c),std::cend(c),comp)-std::cbegin(c);
