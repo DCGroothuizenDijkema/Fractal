@@ -42,20 +42,13 @@ _assign_roots.restype=None
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
-  fig,ax=plt.subplots()
-  fig.subplots_adjust(0,0,1,1)
 
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.set_xticklabels([])
-  ax.set_yticklabels([])
+  _,ax=_plot_setup(fig_inches)
 
   if log:
     iterations=np.log(iterations)
     limit=np.log(limit)
   
-  fig.set_size_inches(fig_inches)
-
   masked_iterations=np.ma.masked_where(iterations==limit,iterations)
   if color_map is None:
     color_map=cm.Spectral_r
@@ -85,15 +78,8 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
-  fig,ax=plt.subplots()
-  fig.subplots_adjust(0,0,1,1)
-
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.set_xticklabels([])
-  ax.set_yticklabels([])
   
-  fig.set_size_inches(fig_inches)
+  _,ax=_plot_setup(fig_inches)
 
   masked_roots=np.ma.masked_where(roots==-1,roots)
   if color_map is None:
@@ -108,19 +94,12 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
 
 def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
   ,fig_inches=(12,12),dpi=1200,color_map=None):
-  fig,ax=plt.subplots()
-  fig.subplots_adjust(0,0,1,1)
 
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.set_xticklabels([])
-  ax.set_yticklabels([])
+  _,ax=_plot_setup(fig_inches)
   
   if log:
     iterations=np.log(iterations)
     limit=np.log(limit)
-  
-  fig.set_size_inches(fig_inches)
 
   masked_iterations=np.ma.masked_where(iterations==limit,iterations)
   if color_map is None:
@@ -134,21 +113,14 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     plt.savefig(file_name,dpi=dpi)
 
 def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
-  fig,ax=plt.subplots()
-  fig.subplots_adjust(0,0,1,1)
 
-  ax.set_xticks([])
-  ax.set_yticks([])
-  ax.set_xticklabels([])
-  ax.set_yticklabels([])
-  
-  fig.set_size_inches(fig_inches)
+  _,ax=_plot_setup(fig_inches)
 
   unique_roots=np.unique(roots)
   unique_roots=np.delete(unique_roots,np.where(unique_roots==-1))
 
   limit_bool=iterations!=limit
-  iterations=np.log(iterations)
+  if log: iterations=np.log(iterations)
 
   no_root=np.ma.masked_array(iterations,limit_bool)
   ax.imshow(no_root,cmap=ListedColormap([0,0,0]))
@@ -198,3 +170,16 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   del tmp_im
 
   return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit.contents.value
+
+def _plot_setup(fig_inches):
+  fig,ax=plt.subplots()
+  fig.subplots_adjust(0,0,1,1)
+
+  ax.set_xticks([])
+  ax.set_yticks([])
+  ax.set_xticklabels([])
+  ax.set_yticklabels([])
+  
+  fig.set_size_inches(fig_inches)
+
+  return fig,ax
