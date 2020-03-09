@@ -53,11 +53,11 @@ def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,li
   dy=2
 
   if example=='cubic_zero':
-    coeffs=[4,-2,0,1]
+    coeffs=[-1,0,0,1]
   elif example=='cubic_one':
     coeffs=[2,-2,0,1]
   elif example=='cubic_two':
-    coeffs=[-1,0,0,1]
+    coeffs=[4,-2,0,1]
   elif example=='quartic_zero':
     coeffs=[0,-1,0,0,3]
   elif example=='quartic_one':
