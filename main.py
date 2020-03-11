@@ -31,6 +31,9 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
   elif example=='zoom_level_three':
     span=0.0011439
     centre=(-0.7439668,0.1314023)
+  else:
+    examples=['zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three']
+    raise ValueError('`example` must be one of {}'.format(examples))
   
   iterations,limit=sample_mandelbrot(centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,num_threads=num_threads
     ,verbose=verbose)
