@@ -76,7 +76,7 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   const int total=xresolution*yresolution;
 
   std::vector<int> increments;
-  iteration_limits(num_threads,yresolution,std::back_insert_iterator(increments));
+  iteration_limits(num_threads,yresolution,std::back_inserter(increments));
 
   std::vector<std::thread> threads;
   for (int itr=0;itr<increments.size()-1;++itr)
@@ -104,7 +104,7 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
 {
   std::vector<std::complex<double>> roots;
-  zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_insert_iterator(roots));
+  zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_inserter(roots));
   
   for (int itr=0;itr<yresolution;++itr)
   {
@@ -118,7 +118,7 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
       std::complex<double> val(*(*(re+itr)+jtr),*(*(im+itr)+jtr));
       std::vector<std::complex<double>> diffs;
       
-      std::transform(std::begin(roots),std::end(roots),std::back_insert_iterator(diffs)
+      std::transform(std::begin(roots),std::end(roots),std::back_inserter(diffs)
         ,[val](std::complex<double> root) { return abs(root-val); });
       *(*(index+itr)+jtr)=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
         ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
