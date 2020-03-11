@@ -24,14 +24,14 @@ __all__=['sample_mandelbrot','plot_mandelbrot','sample_newton','plot_newton','pl
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 
 # extract the functions
-_sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAXPEAPEAHHHHHQEAHNNNN_N@Z')
+_sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAHPEAPEAHHHHHNNNN_N@Z')
 _sample_newton=getattr(_libc,'?sample_newton@@YAXPEAPEAN0PEAPEAHPEANHHHHHQEAHNNNN_N@Z')
 _assign_roots=getattr(_libc,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
 
 # assign arg and return types
-_sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double
+_sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double
   ,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
-_sample_mandelbrot.restype=None
+_sample_mandelbrot.restype=ct.c_int
 _sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_int))
   ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double
   ,ct.c_double,ct.c_bool]
@@ -70,20 +70,18 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
   starty=central_point[1]-y_span/2.
   endx=central_point[0]+x_span/2.
   endy=central_point[1]+y_span/2.
-  # variable to save what the library function uses indicate inclusion in the mandelbrot set
-  limit=c_pointer(ct.c_int,0)
   # array to store the iteration count for each pixel
   tmp,act=c_matrix(ct.c_int,y_resolution,x_resolution)
 
   # call the library function
-  _sample_mandelbrot(
-    tmp,ct.c_int(max_itr),ct.c_int(num_threads),ct.c_int(x_resolution),ct.c_int(y_resolution),limit
+  limit=_sample_mandelbrot(
+    tmp,ct.c_int(max_itr),ct.c_int(num_threads),ct.c_int(x_resolution),ct.c_int(y_resolution)
     ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
   )
 
   del tmp
   # flip the rows because [startx,stary] is stored in [0,0]
-  return np.flipud(np.ctypeslib.as_array(act)),limit.contents.value
+  return np.flipud(np.ctypeslib.as_array(act)),limit
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
