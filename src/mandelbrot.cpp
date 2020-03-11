@@ -47,7 +47,8 @@ void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
 
-  const std::vector<int> increments=iteration_limits(num_threads,yresolution);
+  std::vector<int> increments;
+  iteration_limits(num_threads,yresolution,std::back_insert_iterator(increments));
 
   std::vector<std::thread> threads;
   for (int itr=0;itr<increments.size()-1;++itr)
