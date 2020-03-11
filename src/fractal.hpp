@@ -22,15 +22,36 @@
 #include <iostream>
 #include <limits>
 #include <thread>
-#include <type_traits>
 #include <vector>
 
 template <typename OutputIt>
 inline OutputIt iteration_limits(const int num_threads, const int yresolution, OutputIt out)
 {
+  //
+  // Produce a list of numbers which represent successive left-closed, right-open intervals across which a particular thread will sample
+  // the complex plane
+  //
+  // parameters
+  // ----------
+  // num_threads : const int
+  //  - the number of threads used in the sampling
+  // yresolution : const int 
+  //  - the resolution of the sampling in the y-axis
+  // out : OutputIt
+  //  - output iterator where the limits are written
+  //
+  // returns
+  // -------
+  // OutputIt
+  //  - an iterator to the element past the last element added to out
+  //
+  // OutputIt must meet the requirements of LegacyOutputIterator
+  //
+
   const int span=yresolution/num_threads;
 
   for (int itr=0;itr<num_threads;++itr) { *out++=span*itr; }
+  // push yresolution so that the sampling always goes as far as intended; as such, the last interval may be bigger than the rest
   *out++=yresolution;
 
   return out;
@@ -39,10 +60,36 @@ inline OutputIt iteration_limits(const int num_threads, const int yresolution, O
 template <typename InputIt, typename OutputIt>
 OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
 {
+  //
+  // Produces a container of one type constructed from two ranges
+  // The constructor of the value type of the container type of the output should take two parameters, the first of which comes from the 
+  // first range and the second of which comes from the second range
+  //
+  // parameters
+  // ----------
+  // first1,last1 : InputIt
+  //  - the range of the first set of items to zip
+  // first2,last2 : InputIt
+  //  - the range of the second set of items to zip
+  // out : OutputIt
+  //  - output iterator where the zipped items are written
+  //
+  // returns
+  // -------
+  // OutputIt
+  //  - an iterator to the element past the last element added to out
+  //
+  // InputIt must meet the requirements of LegacyInputIterator
+  // OutputIt must meet the requirements of LegacyOutputIterator
+  //
+
   using scalar=std::decay_t<decltype(*first1)>;
+  using zipped=OutputIt::container_type::value_type;
+
+  // iteratre across both ranges, zip, and write out
   while (first1!=last1&&first2!=last2)
   {
-    *out++=std::complex<double>(static_cast<scalar>(*first1++),static_cast<scalar>(*first2++));
+    *out++=zipped(static_cast<scalar>(*first1++),static_cast<scalar>(*first2++));
   }
 
   return out;
@@ -51,6 +98,24 @@ OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, Outpu
 template <typename It, typename Compare>
 std::size_t argmin(It first, It last, Compare comp)
 {
+  //
+  // Find the index of the minimum element of a range
+  //
+  // parameters
+  // ----------
+  // first,last : It
+  //  - the range overwhich to find the argmin
+  // comep : OutputIt
+  //  - output iterator where the complex numbers are written
+  //
+  // returns
+  // -------
+  // size_t
+  //  - the index of the minimum element of a range
+  //
+  // It must meet the requirements of LegacyForwardterator
+  //
+  
   return std::min_element(first,last,comp)-first;
 }
 
