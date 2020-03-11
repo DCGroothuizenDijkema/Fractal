@@ -22,33 +22,36 @@
 #include <iostream>
 #include <limits>
 #include <thread>
+#include <type_traits>
 #include <vector>
 
-inline std::vector<int> iteration_limits(const int num_threads, const int yresolution)
+template <typename OutputIt>
+inline OutputIt iteration_limits(const int num_threads, const int yresolution, OutputIt out)
 {
   const int span=yresolution/num_threads;
-  std::vector<int> increments;
 
-  for (int itr=0;itr<num_threads;++itr) { increments.push_back(span*itr); }
-  increments.push_back(yresolution);
+  for (int itr=0;itr<num_threads;++itr) { *out++=span*itr; }
+  *out++=yresolution;
 
-  return increments;
+  return out;
 }
 
 template <typename InputIt, typename OutputIt>
 OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
 {
+  using scalar=std::decay_t<decltype(*first1)>;
   while (first1!=last1&&first2!=last2)
   {
-    *out++=std::complex<double>(*first1++,*first2++);
+    *out++=std::complex<double>(static_cast<scalar>(*first1++),static_cast<scalar>(*first2++));
   }
+
   return out;
 }
 
-template <typename Container, typename Compare>
-std::size_t argmin(const Container &c, Compare comp)
+template <typename It, typename Compare>
+std::size_t argmin(It first, It last, Compare comp)
 {
-  return std::min_element(std::cbegin(c),std::cend(c),comp)-std::cbegin(c);
+  return std::min_element(first,last,comp)-first;
 }
 
 

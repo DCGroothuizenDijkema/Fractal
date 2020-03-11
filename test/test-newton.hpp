@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_SUITE(test_newton)
   {
     std::vector<int> test_vec={4,9,1,3,2};
 
-    BOOST_CHECK(argmin(test_vec,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); })==2);
+    BOOST_CHECK(argmin(std::cbegin(test_vec),std::cend(test_vec),[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); })==2);
   }
 
 BOOST_AUTO_TEST_SUITE_END()
