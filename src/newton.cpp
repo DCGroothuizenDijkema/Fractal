@@ -75,7 +75,8 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
 
-  const std::vector<int> increments=iteration_limits(num_threads,yresolution);
+  std::vector<int> increments;
+  iteration_limits(num_threads,yresolution,std::back_insert_iterator(increments));
 
   std::vector<std::thread> threads;
   for (int itr=0;itr<increments.size()-1;++itr)
@@ -119,7 +120,7 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
       
       std::transform(std::begin(roots),std::end(roots),std::back_insert_iterator(diffs)
         ,[val](std::complex<double> root) { return abs(root-val); });
-      *(*(index+itr)+jtr)=static_cast<int>(argmin(diffs
+      *(*(index+itr)+jtr)=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
         ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
       ));
     }
