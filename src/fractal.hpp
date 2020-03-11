@@ -104,7 +104,7 @@ std::size_t argmin(It first, It last, Compare comp)
   // parameters
   // ----------
   // first,last : It
-  //  - the range overwhich to find the argmin
+  //  - the range over which to find the argmin
   // comep : OutputIt
   //  - output iterator where the complex numbers are written
   //
@@ -123,8 +123,9 @@ std::size_t argmin(It first, It last, Compare comp)
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
-void __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
-  , const int yresolution, int * const limit, const double startx, const double endx, const double starty, const double endy
+int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
+  // , const int yresolution, int * const limit, const double startx, const double endx, const double starty, const double endy
+  , const int yresolution, const double startx, const double endx, const double starty, const double endy
   , const bool verbose);
 
 std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const std::complex<double> &x, double const * const coeffs
