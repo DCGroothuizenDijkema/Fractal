@@ -28,24 +28,27 @@ std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const 
 std::complex<double> newton_root( double const * const coeffs, int * const itr_taken, std::complex<double> x, const int degree
   , const int max_itr, const double tol)
 {
-  std::complex<double> init=x; 
   for (int itr=0;itr<max_itr;++itr)
   {
+    // get the current function value and derivative
     std::complex<double> f_x,g_x;
     std::tie(f_x,g_x)=polynomial_and_deriv(x,coeffs,degree);
+    // converged to a root
     if (abs(f_x)<tol)
     {
       *itr_taken=itr;
       return x;
     }
+    // derivative is flat and we can't update
     if (g_x==std::complex<double>(0.,0.))
     {
       *itr_taken=std::numeric_limits<int>::max();
       return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
     }
-    
+    // update
     x-=f_x/g_x;
   }
+  // couldn't find a root in the given number of iterations
   *itr_taken=std::numeric_limits<int>::max();
   return std::complex<double>(std::numeric_limits<double>::infinity(),std::numeric_limits<double>::infinity());
 }
@@ -54,12 +57,15 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
   , const int xresolution, const int start_itr, const int end_itr, const double startx, const double starty, const double deltax
   , const double deltay, const int total, bool verbose)
 {
+  // loop over the given subset of imaginary components
   for (int itr=start_itr;itr<end_itr;++itr)
   {
     double imag=starty+deltay*itr;
+    // loop over all real components
     for (int jtr=0;jtr<xresolution;++jtr)
     {
       double real=startx+deltax*jtr;
+      // determine the root reached and the number of iterations to get there
       std::complex<double> root=newton_root(coeffs,(*(iterations+itr)+jtr),std::complex<double>(real,imag),degree,max_itr,1e-6);
       *(*(re+itr)+jtr)=root.real();
       *(*(im+itr)+jtr)=root.imag();
@@ -72,12 +78,15 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
   , const int num_threads, const int degree, const int xresolution, const int yresolution, const double startx
   , const double endx, const double starty, const double endy, const bool verbose)
 {
+  // determine step sizing in the x- and y-direction
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
 
+  // get the split in the y-direction to allocate to the threads
   std::vector<int> increments;
   iteration_limits(num_threads,yresolution,std::back_inserter(increments));
 
+  // construct all threads, where each thread takes a new left-closed, right-open interval of the imaginary component of the plane
   std::vector<std::thread> threads;
   for (int itr=0;itr<increments.size()-1;++itr)
   {
@@ -89,6 +98,7 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
 
   if (verbose) { std::cout << "Processing " << total << " points." << std::endl; }
 
+  // execute all threads
   std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
   for (std::thread &th:threads) { th.join(); }
   std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
@@ -106,6 +116,7 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
 void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
 {
+  // get a list of all roots, formed from the input vectors giving the real and imaginary components of the roots
   std::vector<std::complex<double>> roots;
   zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_inserter(roots));
   
@@ -113,16 +124,19 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
   {
     for (int jtr=0;jtr<xresolution;++jtr)
     {
+      // if the current value is marked with infinity, no root was reached from it and its index is 0
       if (*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity()||*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity())
       {
         *(*(index+itr)+jtr)=-1;
         continue;
       }
+
       std::complex<double> val(*(*(re+itr)+jtr),*(*(im+itr)+jtr));
+      // determine the difference between the current value and all roots
       std::vector<std::complex<double>> diffs;
-      
       std::transform(std::begin(roots),std::end(roots),std::back_inserter(diffs)
         ,[val](std::complex<double> root) { return abs(root-val); });
+      // find the argmin of the differences, and, therefore, which root was converged to
       *(*(index+itr)+jtr)=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
         ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
       ));

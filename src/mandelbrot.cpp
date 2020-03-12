@@ -117,11 +117,11 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
   //  - the value which marks that a starting point could not be shown to not be in the mandelbrot set
   //
 
-  // determine step sizing in the x- and y- direction
+  // determine step sizing in the x- and y-direction
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
 
-  // get the split in the
+  // get the split in the y-direction to allocate to the threads
   std::vector<int> increments;
   iteration_limits(num_threads,yresolution,std::back_inserter(increments));
 
@@ -149,6 +149,5 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
     std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
   }
 
-  // assign the marker for limit was reached before the absolute value of x became greater than 2
   return std::numeric_limits<int>::max();
 }
