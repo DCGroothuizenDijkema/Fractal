@@ -44,7 +44,7 @@ def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,li
 
   colors=[
       LinearSegmentedColormap.from_list('custom_colormap',['#f3c8ea','#6f185d'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#eaf3c8','#5d6f18'])
+      ,LinearSegmentedColormap.from_list('custom_colormap',['#eaf3c8','#28300a'])
       ,LinearSegmentedColormap.from_list('custom_colormap',['#b3c5ef','#18326f'])
       ,LinearSegmentedColormap.from_list('custom_colormap',['#f3c85d','#6f1833'])
       ,LinearSegmentedColormap.from_list('custom_colormap',['#f3d1c8','#6f2a18'])
