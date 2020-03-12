@@ -92,8 +92,7 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
   , const bool verbose)
 {
   //
-  // Determine if a given set of numbers in a given subset of the complex plane are contained within the mandelbrot set through iteration
-  // The given subset belongs to a larger space to actually be computed, handled by other threads
+  // Determine if numbers in a given subset of the complex plane are contained within the mandelbrot set through iteration
   //
   // parameters
   // ----------
