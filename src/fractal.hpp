@@ -124,7 +124,6 @@ int iterate(std::complex<double> x, const std::complex<double> &c, const int max
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
 int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
-  // , const int yresolution, int * const limit, const double startx, const double endx, const double starty, const double endy
   , const int yresolution, const double startx, const double endx, const double starty, const double endy
   , const bool verbose);
 
