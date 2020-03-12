@@ -25,7 +25,7 @@ _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 
 # extract the functions
 _sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAHPEAPEAHHHHHNNNN_N@Z')
-_sample_newton=getattr(_libc,'?sample_newton@@YAXPEAPEAN0PEAPEAHPEANHHHHHQEAHNNNN_N@Z')
+_sample_newton=getattr(_libc,'?sample_newton@@YAHPEAPEAN0PEAPEAHPEANHHHHHNNNN_N@Z')
 _assign_roots=getattr(_libc,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
 
 # assign arg and return types
@@ -33,9 +33,9 @@ _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,
   ,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_mandelbrot.restype=ct.c_int
 _sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_int))
-  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.POINTER(ct.c_int),ct.c_double,ct.c_double,ct.c_double
+  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double
   ,ct.c_double,ct.c_bool]
-_sample_newton.restype=None
+_sample_newton.restype=ct.c_int
 _assign_roots.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double))
   ,ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
 _assign_roots.restype=None
@@ -157,8 +157,7 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   starty=central_point[1]-y_span/2.
   endx=central_point[0]+x_span/2.
   endy=central_point[1]+y_span/2.
-  # variable to save what the library function uses indicate inclusion in the mandelbrot set
-  limit=c_pointer(ct.c_int,0)
+  
   # arrays to store the real part of the root approached and the imaginary part of the root approached
   tmp_re,act_re=c_matrix(ct.c_double,y_resolution,x_resolution)
   tmp_im,act_im=c_matrix(ct.c_double,y_resolution,x_resolution)
@@ -169,9 +168,9 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   poly_degree=len(coeffs)-1
 
   # call the library function
-  _sample_newton(
+  limit=_sample_newton(
     tmp_re,tmp_im,tmp_itr,poly_coeffs,ct.c_int(max_itr),ct.c_int(num_threads),ct.c_int(poly_degree),ct.c_int(x_resolution)
-    ,ct.c_int(y_resolution),limit,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
+    ,ct.c_int(y_resolution),ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
   )
 
   del tmp_itr
@@ -194,7 +193,7 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   del tmp_im
 
   # flip the rows because [startx,stary] is stored in [0,0]
-  return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit.contents.value
+  return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit
 
 def _plot_setup(fig_inches):
   
