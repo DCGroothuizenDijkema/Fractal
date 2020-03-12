@@ -68,8 +68,8 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
   }
 }
 
-void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
-  , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
+int __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
+  , const int num_threads, const int degree, const int xresolution, const int yresolution, const double startx
   , const double endx, const double starty, const double endy, const bool verbose)
 {
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
@@ -94,10 +94,13 @@ void __declspec(dllexport) sample_newton(double **re, double **im, int **iterati
   std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
 
   std::chrono::duration<double> elapsed=finish-start;
-  if (verbose) { std::cout << total << " points processed." << std::endl; }
-  if (verbose) { std::cout << "Time taken: " << elapsed.count() << "s." << std::endl; }
+  if (verbose)
+  { 
+    std::cout << total << " points processed." << std::endl;
+    std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
+  }
 
-  *limit=std::numeric_limits<int>::max();
+  return std::numeric_limits<int>::max();
 }
 
 void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im

@@ -135,8 +135,8 @@ std::complex<double> newton_root( double const * const coeffs, int * const itr_t
 void compute_newton_range(double **re, double **im, int **iterations, double * const coeffs, const int max_itr, const int degree
   , const int xresolution, const int start_itr, const int end_itr, const double startx, const double starty, const double deltax
   , const double deltay, const int total, bool verbose);
-void __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
-  , const int num_threads, const int degree, const int xresolution, const int yresolution, int * const limit, const double startx
+int __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
+  , const int num_threads, const int degree, const int xresolution, const int yresolution, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution);
