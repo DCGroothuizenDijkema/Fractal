@@ -143,8 +143,11 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
   std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
 
   std::chrono::duration<double> elapsed=finish-start;
-  if (verbose) { std::cout << total << " points processed." << std::endl; }
-  if (verbose) { std::cout << "Time taken: " << elapsed.count() << "s." << std::endl; }
+  if (verbose)
+  { 
+    std::cout << total << " points processed." << std::endl;
+    std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
+  }
 
   // assign the marker for limit was reached before the absolute value of x became greater than 2
   return std::numeric_limits<int>::max();
