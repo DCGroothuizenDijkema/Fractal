@@ -58,7 +58,7 @@ inline OutputIt iteration_limits(const int num_threads, const int yresolution, O
 }
 
 template <typename InputIt, typename OutputIt>
-OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
+inline OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
 {
   //
   // Produces a container of one type constructed from two ranges
@@ -96,7 +96,7 @@ OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, Outpu
 }
 
 template <typename It, typename Compare>
-std::size_t argmin(It first, It last, Compare comp)
+inline std::size_t argmin(It first, It last, Compare comp)
 {
   //
   // Find the index of the minimum element of a range
