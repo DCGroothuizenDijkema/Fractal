@@ -14,7 +14,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from matplotlib.colors import LinearSegmentedColormap,ListedColormap
+from matplotlib.colors import ListedColormap
 
 from huygens.interf import c_matrix,c_vector,c_pointer
 
