@@ -66,3 +66,20 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
   *(d_re+offset)=cuCreal(root);
   *(d_im+offset)=cuCimag(root);
 }
+
+__declspec(dllexport) void sample_newton(double *h_re, double *h_im, int *h_itr, double *coeffs, const int max_itr, const int degree
+  , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy)
+{
+  double *d_re=nullptr,*d_im=nullptr;
+  int *d_itr=nullptr;
+
+  const int total=xresolution*yresolution;
+
+  cudaMalloc(reinterpret_cast<void **>(&d_re),total*sizeof(double));
+  cudaMalloc(reinterpret_cast<void **>(&d_im),total*sizeof(double));
+  cudaMalloc(reinterpret_cast<void **>(&d_itr),total*sizeof(int));
+
+  cudaFree(d_re);
+  cudaFree(d_im);
+  cudaFree(d_itr);
+}
