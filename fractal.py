@@ -42,7 +42,31 @@ _assign_roots.restype=None
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
+  '''
+  Produce a plot of the Mandelbrot Set, coloured by the number of iterations taken.
+  
+  Parameters
+  ----------
+  iterations : 2D numpy.ndarray
+    - The number of iterations for a pixel to exceed the bound.
+  limit : int
+    - The value which represents the bound was not exceeded.
+  log : bool, optional 
+    - If the number of iterations should be logged.
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  fig_inches : tuple, optional
+    - The size of the figure.
+  dpi : int, optional
+    - Plot resolution.
+  color_map : matplotlib.colors.ListedColormap
+    - The colours to use in the visualisation.
 
+  '''
   _,ax=_plot_setup(fig_inches)
 
   if log:
@@ -64,7 +88,32 @@ def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_
     plt.savefig(file_name,dpi=dpi)
 
 def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
+  '''
+  Produce a sample of the Mandelbrot Set.
+  
+  Parameters
+  ----------
+  central_point : 1D array-like
+    - The centre of the area to.
+  x_span,y_span : int
+    - The span across each axis, with half of the span on either side of the centre.
+  x_resolution,y_resolution : int
+    - The number of pizels to divide the x- and y-axes into.
+  max_itr : int
+    - The number of iterations to compute before considering a point to not converge.
+  num_threads : int, optional
+    - The number of threads to execute on.
+  verbose : bool, optional.
+    - For verbose output.
 
+  Returns
+  -------
+  itr : 2D numpy.ndarray
+    - The number of iterations for a pixel exceed the bound.
+  limit : int
+    - The value which represents the bound was not exceeded.
+
+  '''
   # input setup
   startx=central_point[0]-x_span/2.
   starty=central_point[1]-y_span/2.
@@ -85,7 +134,25 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
+  '''
+  Produce a plot of Newton's fractals, coloured by the root converged to.
   
+  Parameters
+  ----------
+  roots : 2D numpy.ndarray
+    - The approximation of the root which was found.
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  fig_inches : tuple, optional
+    - The size of the figure.
+  dpi : int, optional
+    - Plot resolution.
+
+  '''
   _,ax=_plot_setup(fig_inches)
 
   # black out where no root could be found and set color map
@@ -103,7 +170,29 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
 
 def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
   ,fig_inches=(12,12),dpi=1200,color_map=None):
-
+  '''
+  Produce a plot of Newton's fractals, coloured by the number of iterations taken.
+  
+  Parameters
+  ----------
+  iterations : 2D numpy.ndarray
+    - The number of iterations for a pixel to converge to a root.
+  limit : int
+    - The value which represents no root was converged to.
+  log : bool, optional 
+    - If the number of iterations should be logged.
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  fig_inches : tuple, optional
+    - The size of the figure.
+  dpi : int, optional
+    - Plot resolution.
+  
+  '''
   _,ax=_plot_setup(fig_inches)
   
   if log:
@@ -124,7 +213,33 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     plt.savefig(file_name,dpi=dpi)
 
 def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
-
+  '''
+  Produce a plot of Newton's fractals, coloured by the root converged to and the number of iterations taken.
+  
+  Parameters
+  ----------
+  roots : 2D numpy.ndarray
+    - The approximation of the root which was found.
+  iterations : 2D numpy.ndarray
+    - The number of iterations for a pixel to converge to a root.
+  limit : int
+    - The value which represents no root was converged to.
+  colors : list
+    - List of colour scales to use for each root.
+  log : bool, optional 
+    - If the number of iterations should be logged.
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  fig_inches : tuple, optional
+    - The size of the figure.
+  dpi : int, optional
+    - Plot resolution.
+  
+  '''
   _,ax=_plot_setup(fig_inches)
 
   # find all unique roots by the index values, ignoring where no root was found
@@ -151,7 +266,38 @@ def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=T
     plt.savefig(file_name,dpi=dpi)
 
 def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
+  '''
+  Produce Newton's fractals for a given polynomial.
+  
+  Parameters
+  ----------
+  coeffs : 1D array-like
+    - The coefficient of the polynomial, in order from lowest to highest degree.
+  central_point : 1D array-like
+    - The centre of the area to.
+  x_span,y_span : int
+    - The span across each axis, with half of the span on either side of the centre.
+  x_resolution,y_resolution : int
+    - The number of pizels to divide the x- and y-axes into.
+  max_itr : int
+    - The number of iterations to compute before considering a point to not converge.
+  num_threads : int, optional
+    - The number of threads to execute on.
+  verbose : bool, optional.
+    - For verbose output.
 
+  Returns
+  -------
+  roots : 2D numpy.ndarray
+    - The approximation of the root which was found.
+  ind : 2D numpy.ndarray
+    - The root converged to.
+  itr : 2D numpy.ndarray
+    - The number of iterations for a pixel to converge to a root.
+  limit : int
+    - The value which represents no root was converged to.
+
+  '''
   # input setup
   startx=central_point[0]-x_span/2.
   starty=central_point[1]-y_span/2.
@@ -196,7 +342,22 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit
 
 def _plot_setup(fig_inches):
+  '''
+  Internal function to produce a figure with a layout common to all visualisations.
   
+  Parameters
+  ----------
+  fig_inches : string, optional
+    - The size to make the figure.
+
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
+
+  '''
   fig,ax=plt.subplots()
   # remove all borders
   fig.subplots_adjust(0,0,1,1)
