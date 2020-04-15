@@ -3,6 +3,10 @@
 
 An Exploration of Fractal Geometry
 
+## About 
+
+This is a personal project made to better understand some examples of fractal geometry. At this stage, this is limited to Newton's fractals and the Mandelbrot Set. The purpose of this programme is not to provide a novel way to explore these objects, only for my personal edification in C++ programming, interfacing with Python, and visualisation.
+
 ## Output
 
 The following images are examples of those which can be made with this programme:
