@@ -9,10 +9,13 @@ FLAGS=/EHsc /std:c++17 /I./src/ /c /Fo:./obj/ /O2
 TESTFLAGS=/EHsc /std:c++17 /I/lib/boost/ /I./src/ /I./test/ /c /Fo:./obj/
 
 SRC=./src/mandelbrot.cpp ./src/newton.cpp
+CUSRC=./src/cu_newton.cu
 OBJ=./obj/mandelbrot.obj ./obj/newton.obj
-CUOBJ=./obj/cumandelbrot.obj ./obj/cunewton.obj
+# CUOBJ=./obj/cu_mandelbrot.obj ./obj/cu_newton.obj
+CUOBJ=./obj/cu_newton.obj
 
 INC=./src/fractal.hpp
+CUINC=./src/cu_fractal.hpp
 TESTINC=./test/test-newton.hpp
 
 TESTSRC=./test/test.cpp ./src/newton.cpp
@@ -45,11 +48,11 @@ obj/mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
 obj/newton.obj: ./src/newton.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
 
-obj/cumandelbrot.obj: ./src/mandelbrot.cpp $(INC)
-	$(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
+# obj/cu_mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
+	# $(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
 
-obj/cunewton.obj: ./src/newton.cpp $(INC)
-	$(CU) -c -o ./obj/cunewton.obj -I./src/ ./src/newton.cpp
+obj/cu_newton.obj: ./src/newton.cpp $(CUINC)
+	$(CU) -c -o ./obj/cu_newton.obj -I./src/ ./src/cu_newton.cu
 
 obj/test.obj: ./test/test.cpp $(INC) $(TESTINC)
   $(CXX) $(TESTFLAGS) ./test/test.cpp
