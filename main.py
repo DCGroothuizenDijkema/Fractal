@@ -13,9 +13,34 @@ from matplotlib.colors import LinearSegmentedColormap
 
 from fractal import sample_mandelbrot,plot_mandelbrot,sample_newton,plot_newton
 
-def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True,
-  file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
+def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
+  ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
+  '''
+  Calculate a portion of the Mandelbrot Set and produce a visualisation of it.
+  
+  Parameters
+  ----------
+  example : string, optional
+    - The named example to produce
+      One of: 'zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three'
+  fractal_resolution : int, optional
+    - The number of pixels to use in the calculation
+  limit : int, optional
+    - The maximum number of iterations allowed
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  dpi : int, optional
+    - Plot resolution.
+  num_threads : int, optional
+    - The number of threads to execute on.
+  verbose : bool, optional.
+    - For verbose output.
 
+  '''
   # constant figure parameters
   dx=3
   dy=2
@@ -44,9 +69,35 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
-def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True,
-  file_name='newton.pdf',dpi=1200,num_threads=1,verbose=False):
+def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
+  ,file_name='newton.pdf',dpi=1200,num_threads=1,verbose=False):
+  '''
+  Calculate a Newton's fractal and produce a visualisation of it.
+  
+  Parameters
+  ----------
+  example : string, optional
+    - The named example to produce
+      One of: 'cubic_zero','cubic_one','cubic_two','quartic_zero','quartic_one','quartic_two','pentic_zero','sextic_zero_zoom_level_zero',
+        'sextic_zero_zoom_level_one','sextic_zero_zoom_level_two'
+  fractal_resolution : int, optional
+    - The number of pixels to use in the calculation
+  limit : int, optional
+    - The maximum number of iterations allowed
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  dpi : int, optional
+    - Plot resolution.
+  num_threads : int, optional
+    - The number of threads to execute on.
+  verbose : bool, optional.
+    - For verbose output.
 
+  '''
   # some linear colour scales for plotting
   colors=[
       LinearSegmentedColormap.from_list('custom_colormap',['#f3c8ea','#6f185d'])
