@@ -7,7 +7,16 @@ An Exploration of Fractal Geometry
 
 The following images are examples of those which can be made with this programme:
 
-![MandelbrotZero](https://drive.google.com/uc?id=1qwua6GVWwc7Cuy7QVrPTnWozQ4utb6dp)
-![MandelbrotOne](https://drive.google.com/uc?id=1wvLPu_Pi_APO7SbtPpfZ890e9SWCBefD)
-![MandelbrotTwo](https://drive.google.com/uc?id=1Yes-zUROozfgAgYGi0JWx_XWM4kpoWRK)
-![MandelbrotThree](https://drive.google.com/uc?id=1KKJCTiDvBnv7zdcoBvZ-q6nRYlKbZRy0)
+### Mandelbrot Set
+
+![MandelbrotZero](https://drive.google.com/uc?id=11ZJa7Cts5OomnYHr3mfuxRY7r55F-rOE)
+![MandelbrotOne](https://drive.google.com/uc?id=11e1K_0ZEGA57kB2bAAO7PXIfP9aXC0Jz)
+![MandelbrotTwo](https://drive.google.com/uc?id=11ZgFeHcpMfUkVWA4lohpN4wCdgZOh_KB)
+![MandelbrotThree](https://drive.google.com/uc?id=11cBwiblBr3cadKbQGTxFLKHUpdiSlVK7)
+
+### Newton's Fractals
+
+![NewtonZero](https://drive.google.com/uc?id=11i_zoV7DbNY8mcmN1TA3N3L01MtmdBAI)
+![NewtonOne](https://drive.google.com/uc?id=11fBK96IcRPqPtKwDz9Yu18L1jVmX8IM_)
+![NewtonTwo](https://drive.google.com/uc?id=11fACBx2sl2bpzEqaSF4lN93TEs60ocSk)
+![NewtonThree](https://drive.google.com/uc?id=11k47e1L-xMVNknUnwC3Fd8EE3qVYx2f1)
