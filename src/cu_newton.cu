@@ -54,3 +54,15 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
   *itr_taken=NPP_MAX_32S ;
   return make_cuDoubleComplex(CUDART_NAN,CUDART_NAN);
 }
+
+__global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
+  , const int xresolution, const double startx, const double starty, const double deltax, const double deltay)
+{
+  const int idx=threadIdx.x,idy=threadIdx.y,offset=(idx*xresolution)+idy;
+  const double imag=starty+deltay*idy,real=startx+deltax*idx;
+
+  // determine the root reached and the number of iterations to get there
+  cuDoubleComplex root=newton_root(coeffs,(d_itr+offset),make_cuDoubleComplex(real,imag),degree,max_itr,1e-6);
+  *(d_re+offset)=cuCreal(root);
+  *(d_im+offset)=cuCimag(root);
+}
