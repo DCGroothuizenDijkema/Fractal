@@ -57,7 +57,7 @@ obj/newton.obj: ./src/newton.cpp $(INC)
 # obj/cu_mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
 	# $(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
 
-obj/cu_newton.obj: ./src/newton.cpp $(CUINC)
+obj/cu_newton.obj: ./src/cu_newton.cu $(CUINC)
 	$(CU) -c -o ./obj/cu_newton.obj -I./src/ ./src/cu_newton.cu
 
 obj/test.obj: ./test/test.cpp $(INC) $(TESTINC)
