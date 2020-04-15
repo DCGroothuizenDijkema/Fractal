@@ -25,9 +25,15 @@ TARGET=./bin/fractal.dll
 CUTARGET=./bin/cufractal.dll
 TEST=./bin/test.exe
 
-all: dir $(TARGET)
+dll: dir $(TARGET)
 test: dir $(TEST)
 cuda: dir $(CUTARGET)
+
+clean:
+	-@ del /F /Q /S "./bin/" > NUL
+	-@ rmdir /Q /S "./bin/"
+	-@ del /F /Q /S "./obj/" > NUL
+	-@ rmdir /Q /S "./obj/"
 
 dir: 
 	-@ if NOT EXIST "./bin/" mkdir "./bin/"
