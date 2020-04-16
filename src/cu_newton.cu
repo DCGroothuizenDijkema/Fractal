@@ -76,7 +76,7 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
 
   cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyDeviceToHost);
 
-  dim3 dim_block(32,32),dim_grid((xresolution*yresolution)/(dim_block.x*dim_block.y)+1,1,1);
+  const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
 
   compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
 
