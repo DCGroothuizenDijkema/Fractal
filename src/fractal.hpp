@@ -16,8 +16,6 @@
 
 #include <cmath>
 
-#include <chrono>
-#include <iostream>
 #include <thread>
 
 #include <common.hpp>
