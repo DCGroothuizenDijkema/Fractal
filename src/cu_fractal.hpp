@@ -29,7 +29,7 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
 __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay);
 
-void __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *coeffs, const int max_itr, const int degree
+int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy);
 void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution);

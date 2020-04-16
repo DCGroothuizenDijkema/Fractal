@@ -69,7 +69,7 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
   *(d_im+offset)=cuCimag(root);
 }
 
-void __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *coeffs, const int max_itr, const int degree
+int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy)
 {
   double *d_re=nullptr,*d_im=nullptr;
@@ -93,6 +93,8 @@ void __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr,
   cudaFree(d_re);
   cudaFree(d_im);
   cudaFree(d_itr);
+
+  return NPP_MAX_32S;
 }
 
 void __declspec(dllexport) assign_roots(int *index, double *re, double *im, const double * const roots_re, const double * const roots_im
