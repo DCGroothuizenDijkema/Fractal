@@ -11,7 +11,6 @@ TESTFLAGS=/EHsc /std:c++17 /I/lib/boost/ /I./src/ /I./test/ /c /Fo:./obj/
 SRC=./src/mandelbrot.cpp ./src/newton.cpp
 CUSRC=./src/cu_newton.cu
 OBJ=./obj/mandelbrot.obj ./obj/newton.obj
-# CUOBJ=./obj/cu_mandelbrot.obj ./obj/cu_newton.obj
 CUOBJ=./obj/cu_newton.obj
 
 INC=./src/fractal.hpp
@@ -30,10 +29,10 @@ test: dir $(TEST)
 cuda: dir $(CUTARGET)
 
 clean:
-	-@ del /F /Q /S "./bin/" > NUL
-	-@ rmdir /Q /S "./bin/"
-	-@ del /F /Q /S "./obj/" > NUL
-	-@ rmdir /Q /S "./obj/"
+	-@ if EXIST "./bin/" del /F /Q /S "./bin/" > NUL
+	-@ if EXIST "./bin/" rmdir /Q /S "./bin/"
+	-@ if EXIST "./obj/" del /F /Q /S "./obj/" > NUL
+	-@ if EXIST "./obj/" rmdir /Q /S "./obj/"
 
 dir: 
 	-@ if NOT EXIST "./bin/" mkdir "./bin/"
@@ -55,7 +54,7 @@ obj/newton.obj: ./src/newton.cpp $(INC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
 
 # obj/cu_mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
-	# $(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
+#  $(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
 
 obj/cu_newton.obj: ./src/cu_newton.cu $(CUINC)
 	$(CU) -c -o ./obj/cu_newton.obj -I./src/ ./src/cu_newton.cu
