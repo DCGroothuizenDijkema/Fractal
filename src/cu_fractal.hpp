@@ -24,7 +24,7 @@
 
 #include <common.hpp>
 
-#define cuda_assert_success(ans) { _cuda_assert_success((ans),__FILE__,__LINE__); }
+#define CUDA_ASSERT_SUCCESS(ans) { _cuda_assert_success((ans),__FILE__,__LINE__); }
 inline void _cuda_assert_success(cudaError_t code, char *file, int line)
 {
   if (code!=cudaSuccess)
