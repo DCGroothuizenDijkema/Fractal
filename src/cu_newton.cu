@@ -62,6 +62,10 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
   if (idx>=xresolution||idy>=yresolution) { return; }
 
   const double imag=starty+deltay*idy,real=startx+deltax*idx;
+
+  cuDoubleComplex root=newton_root(d_coeffs,(d_itr+ind),make_cuDoubleComplex(real,imag),degree,max_itr,1e-6);
+  d_re[ind]=cuCreal(root);
+  d_im[ind]=cuCimag(root);
 }
 
 int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *h_coeffs, const int max_itr, const int degree
