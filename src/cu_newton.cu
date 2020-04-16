@@ -77,24 +77,26 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution,c_size=(degree+1)*sizeof(double),d_size=total*sizeof(double),i_size=total*sizeof(int);
 
-  cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size));
-  cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size));
-  cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size));
-  cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size));
+  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size)));
+  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size)));
+  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size)));
+  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size)));
 
   cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyDeviceToHost);
 
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
 
   compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,d_coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
+  CUDA_ASSERT_SUCCESS(cudaPeekAtLastError());
+  CUDA_ASSERT_SUCCESS(cudaDeviceSynchronize());
 
-  cudaMemcpy(h_re,d_re,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
-  cudaMemcpy(h_im,d_im,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
-  cudaMemcpy(h_itr,d_itr,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
 
-  cudaFree(d_re);
-  cudaFree(d_im);
-  cudaFree(d_itr);
+  CUDA_ASSERT_SUCCESS(cudaFree(d_re));
+  CUDA_ASSERT_SUCCESS(cudaFree(d_im));
+  CUDA_ASSERT_SUCCESS(cudaFree(d_itr));
 
   return NPP_MAX_32S;
 }
