@@ -56,9 +56,11 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
 }
 
 __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
-  , const int xresolution, const double startx, const double starty, const double deltax, const double deltay)
+  , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
 {
-  const int idx=threadIdx.x,idy=threadIdx.y,offset=(idx*xresolution)+idy;
+  const int idx=blockIdx.x*blockDim.x+threadIdx.x,idy=threadIdx.y,offset=(idx*xresolution)+idy;
+  // thread check
+  if (idx>=xresolution||idy>=yresolution) { return; }
   const double imag=starty+deltay*idy,real=startx+deltax*idx;
 
   // determine the root reached and the number of iterations to get there
@@ -73,11 +75,20 @@ __declspec(dllexport) void sample_newton(double *h_re, double *h_im, int *h_itr,
   double *d_re=nullptr,*d_im=nullptr;
   int *d_itr=nullptr;
 
-  const int total=xresolution*yresolution;
+  const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
+  const int total=xresolution*yresolution,d_size=total*sizeof(double),i_size=total*sizeof(int);
 
-  cudaMalloc(reinterpret_cast<void **>(&d_re),total*sizeof(double));
-  cudaMalloc(reinterpret_cast<void **>(&d_im),total*sizeof(double));
-  cudaMalloc(reinterpret_cast<void **>(&d_itr),total*sizeof(int));
+  cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size));
+  cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size));
+  cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size));
+
+  dim3 dim_block(32,32),dim_grid((xresolution*yresolution)/(dim_block.x*dim_block.y),1,1);
+
+  compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
+
+  cudaMemcpy(h_re,d_re,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
+  cudaMemcpy(h_im,d_im,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
+  cudaMemcpy(h_itr,d_itr,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
 
   cudaFree(d_re);
   cudaFree(d_im);
