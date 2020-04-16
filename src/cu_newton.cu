@@ -86,7 +86,14 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
 
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
 
+  std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
   compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,d_coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
+  std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
+
+  std::chrono::duration<double> elapsed=finish-start;
+  std::cout << total << " points processed." << std::endl;
+  std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
+
   CUDA_ASSERT_SUCCESS(cudaPeekAtLastError());
   CUDA_ASSERT_SUCCESS(cudaDeviceSynchronize());
 
