@@ -262,7 +262,7 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
     for (int jtr=0;jtr<xresolution;++jtr)
     {
       // if the current value is marked with infinity, no root was reached from it and its index is 0
-      if (*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity()||*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity())
+      if (*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity()||*(*(im+itr)+jtr)==std::numeric_limits<double>::infinity())
       {
         *(*(index+itr)+jtr)=-1;
         continue;
