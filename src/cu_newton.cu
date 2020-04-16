@@ -62,14 +62,15 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
   if (idx>=xresolution||idy>=yresolution) { return; }
 
   const double imag=starty+deltay*idy,real=startx+deltax*idx;
-
   cuDoubleComplex root=newton_root(d_coeffs,(d_itr+ind),make_cuDoubleComplex(real,imag),degree,max_itr,1e-6);
+
   d_re[ind]=cuCreal(root);
   d_im[ind]=cuCimag(root);
 }
 
 int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *h_coeffs, const int max_itr, const int degree
-  , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy)
+  , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy
+  , const bool verbose)
 {
   double *d_re=nullptr,*d_im=nullptr,*d_coeffs=nullptr;
   int *d_itr=nullptr;
@@ -91,15 +92,18 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
 
   std::chrono::duration<double> elapsed=finish-start;
-  std::cout << total << " points processed." << std::endl;
-  std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
+  if (verbose)
+  {
+    std::cout << total << " points processed." << std::endl
+      << "Time taken: " << elapsed.count() << "s." << std::endl;
+  }
 
   CUDA_ASSERT_SUCCESS(cudaPeekAtLastError());
   CUDA_ASSERT_SUCCESS(cudaDeviceSynchronize());
 
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(total),cudaMemcpyDeviceToHost));
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
+  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));
 
   CUDA_ASSERT_SUCCESS(cudaFree(d_re));
   CUDA_ASSERT_SUCCESS(cudaFree(d_im));
