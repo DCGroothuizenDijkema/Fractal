@@ -33,8 +33,7 @@ _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,
   ,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_mandelbrot.restype=ct.c_int
 _sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_int))
-  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double
-  ,ct.c_double,ct.c_bool]
+  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_newton.restype=ct.c_int
 _assign_roots.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double))
   ,ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
@@ -44,12 +43,12 @@ _assign_roots.restype=None
 _libc_cuda=ct.cdll.LoadLibrary('./bin/cufractal.dll')
 
 # extract the functions
-_sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHPEAN0PEAH0HHHHNNNN@Z')
+_sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHPEAN0PEAH0HHHHNNNN_N@Z')
 _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXPEAHPEAN1QEBN2HHH@Z')
 
 # assign arg and return types
 _sample_newton_cuda.argtypes=[ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.c_int,ct.c_int
-  ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double]
+  ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_newton_cuda.restype=ct.c_int
 _assign_roots_cuda.argtypes=[ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double)
   ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
@@ -298,7 +297,7 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
     - The number of iterations to compute before considering a point to not converge.
   num_threads : int, optional
     - The number of threads to execute on.
-  verbose : bool, optional.
+  verbose : bool, optional
     - For verbose output.
 
   Returns
@@ -355,6 +354,79 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
 
   # flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit
+
+def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
+  '''
+  Produce Newton's fractals for a given polynomial with CUDA acceleration.
+  
+  Parameters
+  ----------
+  coeffs : 1D array-like
+    - The coefficient of the polynomial, in order from lowest to highest degree.
+  central_point : 1D array-like
+    - The centre of the area to.
+  x_span,y_span : int
+    - The span across each axis, with half of the span on either side of the centre.
+  x_resolution,y_resolution : int
+    - The number of pizels to divide the x- and y-axes into.
+  max_itr : int
+    - The number of iterations to compute before considering a point to not converge.
+  verbose : bool, optional
+    - For verbose output.
+
+  Returns
+  -------
+  roots : 2D numpy.ndarray
+    - The approximation of the root which was found.
+  ind : 2D numpy.ndarray
+    - The root converged to.
+  itr : 2D numpy.ndarray
+    - The number of iterations for a pixel to converge to a root.
+  limit : int
+    - The value which represents no root was converged to.
+
+  '''
+  # input setup
+  startx=central_point[0]-x_span/2.
+  starty=central_point[1]-y_span/2.
+  endx=central_point[0]+x_span/2.
+  endy=central_point[1]+y_span/2.
+  
+  # arrays to store the real part of the root approached and the imaginary part of the root approached
+  re=c_vector(ct.c_double,y_resolution*x_resolution)
+  im=c_vector(ct.c_double,y_resolution*x_resolution)
+  # array to store the iteration count to get to the root
+  itr=c_vector(ct.c_int,y_resolution*x_resolution)
+  # coefficients of the polynomial in library form
+  poly_coeffs=c_vector(ct.c_double,len(coeffs),coeffs)
+  poly_degree=len(coeffs)-1
+
+  # call the library function
+  limit=_sample_newton_cuda(
+    re,im,itr,poly_coeffs,ct.c_int(max_itr),ct.c_int(poly_degree),ct.c_int(x_resolution),ct.c_int(y_resolution)
+    ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
+  )
+
+  # convert roots to a numpy array
+  roots=1j*np.ctypeslib.as_array(im)
+  roots+=np.ctypeslib.as_array(re)
+
+  # determine the actual roots
+  actuals=np.roots(np.flip(coeffs))
+  # real and imaginary parts of the actual roots
+  roots_re=c_vector(ct.c_double,len(actuals),np.real(actuals))
+  roots_im=c_vector(ct.c_double,len(actuals),np.imag(actuals))
+  # array to store which root the approximation is
+  ind=c_vector(ct.c_int,y_resolution*x_resolution)
+
+  # call the library function
+  _assign_roots_cuda(ind,re,im,roots_re,roots_im,ct.c_int(poly_degree),ct.c_int(x_resolution),ct.c_int(y_resolution))
+
+  # flip the rows because [startx,stary] is stored in [0,0] 
+  return np.flipud(np.reshape(roots,(x_resolution,y_resolution))) \
+    ,np.flipud(np.reshape(np.ctypeslib.as_array(ind),(x_resolution,y_resolution))) \
+    ,np.flipud(np.reshape(np.ctypeslib.as_array(itr),(x_resolution,y_resolution))) \
+    ,limit
 
 def _plot_setup(fig_inches):
   '''
