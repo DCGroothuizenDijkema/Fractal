@@ -397,7 +397,7 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
     - The value which represents no root was converged to.
 
   '''
-  if not CUDA_ENABLED: raise CUDAWarning('CUDA library not implemented.')
+  if not CUDA_ENABLED: raise CUDAWarning('CUDA library has not been implemented.')
   # input setup
   startx=central_point[0]-x_span/2.
   starty=central_point[1]-y_span/2.

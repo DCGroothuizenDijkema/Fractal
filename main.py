@@ -11,7 +11,7 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
-from fractal import sample_mandelbrot,plot_mandelbrot,sample_newton,plot_newton
+from fractal import sample_mandelbrot,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
@@ -69,7 +69,7 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
-def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
+def produce_newton_visualisation(example='cubic_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='newton.pdf',dpi=1200,num_threads=1,verbose=False):
   '''
   Calculate a Newton's fractal and produce a visualisation of it.
@@ -80,6 +80,9 @@ def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,li
     - The named example to produce
       One of: 'cubic_zero','cubic_one','cubic_two','quartic_zero','quartic_one','quartic_two','pentic_zero','sextic_zero_zoom_level_zero',
         'sextic_zero_zoom_level_one','sextic_zero_zoom_level_two'
+  method : string, optional
+    - If the CPU or GPU should be used to perform the calculations
+      One of: 'cpu', 'gpu'
   fractal_resolution : int, optional
     - The number of pixels to use in the calculation
   limit : int, optional
@@ -98,15 +101,24 @@ def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,li
     - For verbose output.
 
   '''
+  methods=['cpu','gpu']
+  try:
+    methods.index(method)
+  except ValueError:
+    raise ValueError('`method` must be one of {}'.format(methods))
+
+  if method=='gpu' and num_threads!=1:
+    raise ValueError('`num_threads` must be 1 if `method` is \'gpu\'')
+
   # some linear colour scales for plotting
   colors=[
-      LinearSegmentedColormap.from_list('custom_colormap',['#f3c8ea','#6f185d'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#eaf3c8','#28300a'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#b3c5ef','#18326f'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#f3c85d','#6f1833'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#f3d1c8','#6f2a18'])
-      ,LinearSegmentedColormap.from_list('custom_colormap',['#c8eaf3','#185d6f'])
-    ]
+    LinearSegmentedColormap.from_list('custom_colormap',['#f3c8ea','#6f185d'])
+    ,LinearSegmentedColormap.from_list('custom_colormap',['#eaf3c8','#28300a'])
+    ,LinearSegmentedColormap.from_list('custom_colormap',['#b3c5ef','#18326f'])
+    ,LinearSegmentedColormap.from_list('custom_colormap',['#f3c85d','#6f1833'])
+    ,LinearSegmentedColormap.from_list('custom_colormap',['#f3d1c8','#6f2a18'])
+    ,LinearSegmentedColormap.from_list('custom_colormap',['#c8eaf3','#185d6f'])
+  ]
 
   # constant figure parameters
   centre=(0,0)
@@ -151,7 +163,10 @@ def produce_newton_visualisation(example='cubic_zero',fractal_resolution=3001,li
     raise ValueError('`example` must be one of {}'.format(examples))
 
   # determine the fractal
-  _,idx,itr,limit=sample_newton(coeffs,centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,num_threads,verbose)
+  if method=='gpu':
+    _,idx,itr,limit=sample_newton_cuda(coeffs,centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,verbose)
+  else:
+    _,idx,itr,limit=sample_newton(coeffs,centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,num_threads,verbose)
   # produce the visualisation
   plot_newton(idx,itr,limit,colors,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
