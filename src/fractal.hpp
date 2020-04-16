@@ -140,4 +140,4 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
 void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution);
 
-#endif // FRACTAL_H__
+#endif // !FRACTAL_H__
