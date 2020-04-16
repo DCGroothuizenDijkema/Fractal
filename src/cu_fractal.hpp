@@ -16,15 +16,27 @@
 
 #include <cuComplex.h>
 #include <math_constants.h>
+#include <cuda_runtime.h>
+#include <driver_types.h>
 #include <npp.h>
 #include <thrust/pair.h>
 #include <thrust/tuple.h>
 
 #include <common.hpp>
 
-__device__ thrust::pair<cuDoubleComplex,cuDoubleComplex> polynomial_and_deriv(const cuDoubleComplex &x, const double * const coeffs
+#define cuda_assert_success(ans) { _cuda_assert_success((ans),__FILE__,__LINE__); }
+inline void _cuda_assert_success(cudaError_t code, char *file, int line)
+{
+  if (code!=cudaSuccess)
+  {
+    fprintf(stderr,"_cuda_assert_success: %s %s %d\n",cudaGetErrorString(code),file,line);
+    exit(code);
+  }
+}
+
+__device__  thrust::pair<cuDoubleComplex,cuDoubleComplex> polynomial_and_deriv(const cuDoubleComplex &x, const double * const coeffs
   , const int degree);
-__device__ cuDoubleComplex newton_root(const double * const coeffs, int * const itr_taken, cuDoubleComplex x, const int degree
+__device__  cuDoubleComplex newton_root(const double * const coeffs, int * const itr_taken, cuDoubleComplex x, const int degree
   , const int max_itr, const double tol);
 __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay);
