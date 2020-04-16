@@ -82,7 +82,7 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size)));
   CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size)));
 
-  cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyDeviceToHost);
+  cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyHostToDevice);
 
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
 
