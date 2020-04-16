@@ -9,6 +9,9 @@
 # Helper function file to produce visualisations of fractals
 
 
+# change is CUDA library dll has not been produced
+CUDA_ENABLED=True
+
 import ctypes as ct
 import numpy as np
 
@@ -39,20 +42,27 @@ _assign_roots.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.POINTER(ct.POINTER(c
   ,ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
 _assign_roots.restype=None
 
-# load the cuda lib
-_libc_cuda=ct.cdll.LoadLibrary('./bin/cufractal.dll')
+if CUDA_ENABLED:
+  # load the cuda lib
+  _libc_cuda=ct.cdll.LoadLibrary('./bin/cufractal.dll')
 
-# extract the functions
-_sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHPEAN0PEAH0HHHHNNNN_N@Z')
-_assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXPEAHPEAN1QEBN2HHH@Z')
+  # extract the functions
+  _sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHPEAN0PEAH0HHHHNNNN_N@Z')
+  _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXPEAHPEAN1QEBN2HHH@Z')
 
-# assign arg and return types
-_sample_newton_cuda.argtypes=[ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.c_int,ct.c_int
-  ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
-_sample_newton_cuda.restype=ct.c_int
-_assign_roots_cuda.argtypes=[ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double)
-  ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
-_assign_roots_cuda.restype=None
+  # assign arg and return types
+  _sample_newton_cuda.argtypes=[ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.c_int,ct.c_int
+    ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
+  _sample_newton_cuda.restype=ct.c_int
+  _assign_roots_cuda.argtypes=[ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double)
+    ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
+  _assign_roots_cuda.restype=None
+
+class CUDAWarning(Exception):
+  '''
+  An error to raise when a CUDA library doesn't exist
+  '''
+  pass
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
@@ -386,6 +396,7 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
     - The value which represents no root was converged to.
 
   '''
+  if not CUDA_ENABLED: raise CUDAWarning('CUDA library not implemented.')
   # input setup
   startx=central_point[0]-x_span/2.
   starty=central_point[1]-y_span/2.
