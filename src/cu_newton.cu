@@ -45,14 +45,14 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
     if (cuCreal(g_x)==0.&&cuCimag(g_x)==0.)
     {
       *itr_taken=NPP_MAX_32S ;
-      return make_cuDoubleComplex(CUDART_NAN,CUDART_NAN);
+      return make_cuDoubleComplex(CUDART_INF,CUDART_INF);
     }
     // update
     x=cuCsub(x,cuCdiv(f_x,g_x));
   }
   // couldn't find a root in the given number of iterations
   *itr_taken=NPP_MAX_32S ;
-  return make_cuDoubleComplex(CUDART_NAN,CUDART_NAN);
+  return make_cuDoubleComplex(CUDART_INF,CUDART_INF);
 }
 
 __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
@@ -95,7 +95,30 @@ void __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr,
   cudaFree(d_itr);
 }
 
-void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
-  , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
+void __declspec(dllexport) assign_roots(int *index, double *re, double *im, const double * const roots_re, const double * const roots_im
+  , const int degree, const int xresolution, const int yresolution)
 {
+  // get a list of all roots, formed from the input vectors giving the real and imaginary components of the roots
+  std::vector<std::complex<double>> roots;
+  zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_inserter(roots));
+  
+  for (int itr=0;itr<xresolution*yresolution;++itr)
+  {
+    // if the current value is marked with infinity, no root was reached from it and its index is 0
+    if (*(re+itr)==std::numeric_limits<double>::infinity()||*(im+itr)==std::numeric_limits<double>::infinity())
+    {
+      *(index+itr)=-1;
+      continue;
+    }
+
+    std::complex<double> val(*(re+itr),*(im+itr));
+    // determine the difference between the current value and all roots
+    std::vector<std::complex<double>> diffs;
+    std::transform(std::begin(roots),std::end(roots),std::back_inserter(diffs)
+      ,[val](std::complex<double> root) { return abs(root-val); });
+    // find the argmin of the differences, and, therefore, which root was converged to
+    *(index+itr)=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
+      ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
+    ));
+  }
 }
