@@ -21,7 +21,8 @@ from matplotlib.colors import ListedColormap
 
 from huygens.interf import c_matrix,c_vector,c_pointer
 
-__all__=['sample_mandelbrot','plot_mandelbrot','sample_newton','plot_newton','plot_newton_roots','plot_newton_iteration']
+__all__=['sample_mandelbrot','plot_mandelbrot','sample_newton','sample_newton_cuda','plot_newton','plot_newton_roots'
+  ,'plot_newton_iteration']
 
 # load the lib
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
