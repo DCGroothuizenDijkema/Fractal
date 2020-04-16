@@ -74,7 +74,7 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size));
   cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size));
 
-  cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyHostToDevice);
+  cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyDeviceToHost);
 
   dim3 dim_block(32,32),dim_grid((xresolution*yresolution)/(dim_block.x*dim_block.y)+1,1,1);
 
