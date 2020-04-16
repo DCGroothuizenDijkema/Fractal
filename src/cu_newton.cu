@@ -58,6 +58,8 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
 __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const d_coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
 {
+  const int idy=blockIdx.y*blockDim.y+threadIdx.y,idx=blockIdx.x*blockDim.x+threadIdx.x,ind=idy*xresolution+idx;
+  if (idx>=xresolution||idy>=yresolution) { return; }
 }
 
 int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *h_coeffs, const int max_itr, const int degree
