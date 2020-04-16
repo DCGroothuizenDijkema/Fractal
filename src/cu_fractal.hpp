@@ -20,6 +20,8 @@
 #include <thrust/pair.h>
 #include <thrust/tuple.h>
 
+#include <common.hpp>
+
 __device__ thrust::pair<cuDoubleComplex,cuDoubleComplex> polynomial_and_deriv(const cuDoubleComplex &x, const double * const coeffs
   , const int degree);
 __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const itr_taken, cuDoubleComplex x, const int degree
