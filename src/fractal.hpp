@@ -17,11 +17,8 @@
 #include <cmath>
 
 #include <chrono>
-#include <complex>
 #include <iostream>
-#include <limits>
 #include <thread>
-#include <vector>
 
 #include <common.hpp>
 

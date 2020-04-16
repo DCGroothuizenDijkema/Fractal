@@ -15,6 +15,9 @@
 #define COMMON_H__
 
 #include <algorithm>
+#include <complex>
+#include <limits>
+#include <vector>
 
 template <typename InputIt, typename OutputIt>
 inline OutputIt zip(InputIt first1, InputIt last1, InputIt first2, InputIt last2, OutputIt out)
