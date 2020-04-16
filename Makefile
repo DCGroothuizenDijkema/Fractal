@@ -27,6 +27,8 @@ TEST=./bin/test.exe
 dll: dir $(TARGET)
 test: dir $(TEST)
 cuda: dir $(CUTARGET)
+all: dir $(TARGET) $(CUTARGET) $(TEST)
+reset: clean all
 
 clean:
 	-@ if EXIST "./bin/" del /F /Q /S "./bin/" > NUL
