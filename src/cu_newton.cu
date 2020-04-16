@@ -55,7 +55,7 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
   return make_cuDoubleComplex(CUDART_INF,CUDART_INF);
 }
 
-__global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const coeffs, const int max_itr, const int degree
+__global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const d_coeffs, const int max_itr, const int degree
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
 {
 }
@@ -78,7 +78,7 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
 
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
 
-  compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
+  compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,d_coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
 
   cudaMemcpy(h_re,d_re,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
   cudaMemcpy(h_im,d_im,static_cast<size_t>(total),cudaMemcpyDeviceToHost);
