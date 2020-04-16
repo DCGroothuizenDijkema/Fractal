@@ -60,6 +60,8 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
 {
   const int idy=blockIdx.y*blockDim.y+threadIdx.y,idx=blockIdx.x*blockDim.x+threadIdx.x,ind=idy*xresolution+idx;
   if (idx>=xresolution||idy>=yresolution) { return; }
+
+  const double imag=starty+deltay*idy,real=startx+deltax*idx;
 }
 
 int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *h_coeffs, const int max_itr, const int degree
