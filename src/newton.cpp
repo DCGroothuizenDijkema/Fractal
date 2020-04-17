@@ -23,7 +23,7 @@ std::pair<std::complex<double>,std::complex<double>> polynomial_and_deriv(const 
   //  - the point to evaluate at
   // coeffs : const double * const
   //  - the coefficients of the polynomial given in order of the lowest degree to highest
-  //    if the polynomial is written p(x)=a_n*x^(n-1)+...+a_(k)*^(n-k-1)+...+a_1*x+a_0, then coeffs should have the following form:
+  //    if the polynomial is written p(x)=a_n*x^(n-1)+...+a_k*x^(n-k-1)+...+a_1*x+a_0, then coeffs should have the following form:
   //      *(coeffs+0)==a_0
   //      *(coeffs+1)==a_1
   //      *(coeffs+k)==a_k
