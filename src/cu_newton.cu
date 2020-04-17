@@ -102,20 +102,21 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
   return make_cuDoubleComplex(CUDART_INF,CUDART_INF);
 }
 
-__global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * const d_coeffs, const int max_itr, const int degree
-  , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
+__global__ void compute_newton(double * const d_re, double * const d_im, int * const d_itr, const double * const d_coeffs, const int max_itr
+  , const int degree, const int xresolution, const int yresolution, const double startx, const double starty, const double deltax
+  , const double deltay)
 {
   //
   // CUDA kernel to find the roots of a polynomial a given number in the complex plane converges to with Newton's method
   //
   // parameters
   // ----------
-  // d_re,d_im : double *
+  // d_re,d_im : double * const
   //  - 1D flat arrays representing 2D arrays to write out the root which the numbers in the subset cnoverged to
-  // d_itr : int *
+  // d_itr : int * const
   //  - 1D flat array representing a 2D array to write out either the number of iterations needed reach a root or a marker that this root 
   //      could not be reached
-  // d_coeffs : double * const
+  // d_coeffs : const double * const
   //  - the coefficients of the polynomial given in order of the lowest degree to highest
   //    see polynomial_and_deriv() for requirements
   // max_itr : const int
@@ -147,21 +148,21 @@ __global__ void compute_newton(double *d_re, double *d_im, int *d_itr, double * 
   d_im[ind]=cuCimag(root);
 }
 
-int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, double *h_coeffs, const int max_itr, const int degree
-  , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy
-  , const bool verbose)
+int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im, int * const h_itr, const double * const h_coeffs
+  , const int max_itr, const int degree, const int xresolution, const int yresolution, const double startx, const double endx
+  , const double starty, const double endy, const bool verbose)
 {
   //
   // Determine the roots of a polynomial the numbers in a given subset of the complex plane converge to with Newton's method
   //
   // parameters
   // ----------
-  // h_re,h_im : double *
+  // h_re,h_im : double * const
   //  - 1D flat arrays representing 2D arrays to write out the root which the numbers in the subset cnoverged to
-  // h_itr : int *
+  // h_itr : int * const
   //  - 1D flat array representing a 2D array to write out either the number of iterations needed reach a root or a marker that this root 
   //      could not be reached
-  // h_coeffs : double *
+  // h_coeffs : const double * const
   //  - the coefficients of the polynomial given in order of the lowest degree to highest
   //    see polynomial_and_deriv() for requirements
   // max_itr : const int
@@ -191,10 +192,10 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   double *d_re=nullptr,*d_im=nullptr,*d_coeffs=nullptr;
   int *d_itr=nullptr;
   // allocate device memory
-  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size)));
-  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size)));
-  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size)));
-  CUDA_ASSERT_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size)));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size)));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size)));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size)));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size)));
   // copy polynomial coefficients over
   cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyHostToDevice);
 
@@ -213,18 +214,18 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   }
 
   // check for errors
-  CUDA_ASSERT_SUCCESS(cudaPeekAtLastError());
-  CUDA_ASSERT_SUCCESS(cudaDeviceSynchronize());
+  CUDA_REQUIRE_SUCCESS(cudaPeekAtLastError());
+  CUDA_REQUIRE_SUCCESS(cudaDeviceSynchronize());
 
   // copy back to host
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
-  CUDA_ASSERT_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));
 
   // free GPU memory
-  CUDA_ASSERT_SUCCESS(cudaFree(d_re));
-  CUDA_ASSERT_SUCCESS(cudaFree(d_im));
-  CUDA_ASSERT_SUCCESS(cudaFree(d_itr));
+  CUDA_REQUIRE_SUCCESS(cudaFree(d_re));
+  CUDA_REQUIRE_SUCCESS(cudaFree(d_im));
+  CUDA_REQUIRE_SUCCESS(cudaFree(d_itr));
 
   return NPP_MAX_32S;
 }
