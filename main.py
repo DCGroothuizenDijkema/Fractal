@@ -11,9 +11,9 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
-from fractal import sample_mandelbrot,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
+from fractal import sample_mandelbrot,sample_mandelbrot_cuda,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
 
-def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
+def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
   '''
   Calculate a portion of the Mandelbrot Set and produce a visualisation of it.
@@ -23,6 +23,9 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
   example : string, optional
     - The named example to produce
       One of: 'zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three'
+  method : string, optional
+    - If the CPU or GPU should be used to perform the calculations
+      One of: 'cpu', 'gpu'
   fractal_resolution : int, optional
     - The number of pixels to use in the calculation
   limit : int, optional
@@ -41,6 +44,15 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
     - For verbose output.
 
   '''
+  methods=['cpu','gpu']
+  try:
+    methods.index(method)
+  except ValueError:
+    raise ValueError('`method` must be one of {}'.format(methods))
+
+  if method=='gpu' and num_threads!=1:
+    raise ValueError('`num_threads` must be 1 if `method` is \'gpu\'')
+
   # constant figure parameters
   dx=3
   dy=2
@@ -64,8 +76,13 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',fractal_resolutio
     raise ValueError('`example` must be one of {}'.format(examples))
   
   # determine the fractal
-  iterations,limit=sample_mandelbrot(centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,num_threads=num_threads
-    ,verbose=verbose)
+  
+  # determine the fractal
+  if method=='gpu':
+    iterations,limit=sample_mandelbrot_cuda(centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,verbose=verbose)
+  else:
+    iterations,limit=sample_mandelbrot(centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,num_threads=num_threads
+      ,verbose=verbose)
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
