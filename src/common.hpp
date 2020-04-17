@@ -82,7 +82,7 @@ inline std::size_t argmin(It first, It last, Compare comp)
   return std::min_element(first,last,comp)-first;
 }
 
-void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
+void __declspec(dllexport) assign_roots(int * const idx, const double * const re, const double * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution);
 
 #endif // !COMMON_H__

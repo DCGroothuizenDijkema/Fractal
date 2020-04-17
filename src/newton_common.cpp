@@ -11,7 +11,7 @@
 
 #include <common.hpp>
 
-void __declspec(dllexport) assign_roots(int * const * const index, const double * const * const re, const double * const * const im
+void __declspec(dllexport) assign_roots(int * const idx, const double * const re, const double * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
 {
   //
@@ -19,10 +19,10 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
   //
   // parameters
   // ----------
-  // re,im : double **
-  //  - 2D arrays to write out the root which the numbers in the subset cnoverged to
-  // iterations : int **
-  //  - 2D array to write out either the number of iterations needed reach a root or a marker that this root could not be reached
+  // idx : int * const
+  //  - 1D array to write out the index of the root each root is closes to
+  // iterations : const double * const
+  //  - 1D arrays of real and imaginary parts of each root
   // coeffs : double *
   //  - the coefficients of the polynomial given in order of the lowest degree to highest
   //    see polynomial_and_deriv() for requirements
@@ -43,27 +43,26 @@ void __declspec(dllexport) assign_roots(int * const * const index, const double 
   // get a list of all roots, formed from the input vectors giving the real and imaginary components of the roots
   std::vector<std::complex<double>> roots;
   zip(roots_re,roots_re+degree,roots_im,roots_im+degree,std::back_inserter(roots));
-  
-  for (int itr=0;itr<yresolution;++itr)
-  {
-    for (int jtr=0;jtr<xresolution;++jtr)
-    {
-      // if the current value is marked with infinity, no root was reached from it and its index is 0
-      if (*(*(re+itr)+jtr)==std::numeric_limits<double>::infinity()||*(*(im+itr)+jtr)==std::numeric_limits<double>::infinity())
-      {
-        *(*(index+itr)+jtr)=-1;
-        continue;
-      }
 
-      std::complex<double> val(*(*(re+itr)+jtr),*(*(im+itr)+jtr));
-      // determine the difference between the current value and all roots
-      std::vector<std::complex<double>> diffs;
-      std::transform(std::begin(roots),std::end(roots),std::back_inserter(diffs)
-        ,[val](std::complex<double> root) { return abs(root-val); });
-      // find the argmin of the differences, and, therefore, which root was converged to
-      *(*(index+itr)+jtr)=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
-        ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
-      ));
+  const int total=xresolution*yresolution;
+  
+  for (int itr=0;itr<total;++itr)
+  {
+    // if the current value is marked with infinity, no root was reached from it and its index is 0
+    if (re[itr]==std::numeric_limits<double>::infinity()||im[itr]==std::numeric_limits<double>::infinity())
+    {
+      idx[itr]=-1;
+      continue;
     }
+
+    std::complex<double> val(re[itr],im[itr]);
+    // determine the difference between the current value and all roots
+    std::vector<std::complex<double>> diffs;
+    std::transform(std::begin(roots),std::end(roots),std::back_inserter(diffs)
+      ,[val](std::complex<double> root) { return abs(root-val); });
+    // find the argmin of the differences, and, therefore, which root was converged to
+    idx[itr]=static_cast<int>(argmin(std::cbegin(diffs),std::cend(diffs)
+      ,[](const std::complex<double> &x, const std::complex<double> &y){ return abs(x)<abs(y); }
+    ));
   }
 }
