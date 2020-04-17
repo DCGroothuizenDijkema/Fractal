@@ -52,20 +52,27 @@ int __declspec(dllexport) sample_mandelbrot(int * const h_itr, const int max_itr
   // GPU memory setup
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
   // run and time
-  std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
+  float elapsed;
+  cudaEvent_t start,stop;
+
+  CUDA_REQUIRE_SUCCESS(cudaEventCreate(&start));
+  CUDA_REQUIRE_SUCCESS(cudaEventCreate(&stop));
+  CUDA_REQUIRE_SUCCESS(cudaEventRecord(start,0));
+
   compute_mandelbrot<<<dim_grid,dim_block>>>(d_itr,max_itr,xresolution,yresolution,startx,starty,deltax,deltay);
-  std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
-
-  std::chrono::duration<double> elapsed=finish-start;
-  if (verbose)
-  {
-    std::cout << total << " points processed." << std::endl
-      << "Time taken: " << elapsed.count() << "s." << std::endl;
-  }
-
   // check for errors
   CUDA_REQUIRE_SUCCESS(cudaPeekAtLastError());
   CUDA_REQUIRE_SUCCESS(cudaDeviceSynchronize());
+
+  CUDA_REQUIRE_SUCCESS(cudaEventRecord(stop,0));
+  CUDA_REQUIRE_SUCCESS(cudaEventSynchronize(stop));
+  CUDA_REQUIRE_SUCCESS(cudaEventElapsedTime(&elapsed,start,stop));
+
+  if (verbose)
+  {
+    std::cout << total << " points processed." << std::endl
+      << "Time taken: " << elapsed/1000 << "s." << std::endl;
+  }
 
   // copy back to host
   CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));

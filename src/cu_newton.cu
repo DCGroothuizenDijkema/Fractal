@@ -202,25 +202,27 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
   // GPU memory setup
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
   // run and time
-  std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
+  float elapsed;
+  cudaEvent_t start,stop;
+
+  CUDA_REQUIRE_SUCCESS(cudaEventCreate(&start));
+  CUDA_REQUIRE_SUCCESS(cudaEventCreate(&stop));
+  CUDA_REQUIRE_SUCCESS(cudaEventRecord(start,0));
+  
   compute_newton<<<dim_grid,dim_block>>>(d_re,d_im,d_itr,d_coeffs,max_itr,degree,xresolution,yresolution,startx,starty,deltax,deltay);
-  std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
-
-  std::chrono::duration<double> elapsed=finish-start;
-  if (verbose)
-  {
-    std::cout << total << " points processed." << std::endl
-      << "Time taken: " << elapsed.count() << "s." << std::endl;
-  }
-
   // check for errors
   CUDA_REQUIRE_SUCCESS(cudaPeekAtLastError());
   CUDA_REQUIRE_SUCCESS(cudaDeviceSynchronize());
 
-  // copy back to host
-  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
-  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
-  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaEventRecord(stop,0));
+  CUDA_REQUIRE_SUCCESS(cudaEventSynchronize(stop));
+  CUDA_REQUIRE_SUCCESS(cudaEventElapsedTime(&elapsed,start,stop));
+
+  if (verbose)
+  {
+    std::cout << total << " points processed." << std::endl
+      << "Time taken: " << elapsed/1000 << "s." << std::endl;
+  }
 
   // free GPU memory
   CUDA_REQUIRE_SUCCESS(cudaFree(d_re));
