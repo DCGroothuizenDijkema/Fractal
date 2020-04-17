@@ -25,11 +25,11 @@
 #include <common.hpp>
 
 #define CUDA_ASSERT_SUCCESS(ans) { _cuda_assert_success((ans),__FILE__,__LINE__); }
-inline void _cuda_assert_success(cudaError_t code, char *file, int line)
+inline void _cuda_assert_success(cudaError_t code, const char *file, int line)
 {
   if (code!=cudaSuccess)
   {
-    fprintf(stderr,"_cuda_assert_success: %s %s %d\n",cudaGetErrorString(code),file,line);
+    std::cerr << "CUDA ERROR: " << cudaGetErrorString(code) << file << line << std::endl;;
     exit(code);
   }
 }
