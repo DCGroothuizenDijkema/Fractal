@@ -15,10 +15,11 @@
 #define CUFRACTAL_H__
 
 #include <cuComplex.h>
-#include <math_constants.h>
 #include <cuda_runtime.h>
 #include <driver_types.h>
+#include <math_constants.h>
 #include <npp.h>
+
 #include <thrust/pair.h>
 #include <thrust/tuple.h>
 
