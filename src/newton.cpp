@@ -126,9 +126,9 @@ void compute_newton_range(double **re, double **im, int **iterations, double * c
   //  - the number of steps to take in the x-direction (the real components)
   // start_itr,end_itr : const int 
   //  - the subset of the steps taken from the starting point in the y-direction (the complex component)
-  // startx,starty : const int 
+  // startx,starty : const double 
   //  - the real and imaginary components of the number defining the bottom left corner of the entire space being sampled
-  // deltax,deltay : const int 
+  // deltax,deltay : const double 
   //  - the size of the step to take in the x- and y-direction
   // total : const int 
   //  - the total number of points being processed
@@ -178,7 +178,7 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
   //  - the number of threads to use in computation
   // xresolution,yresolution : const int 
   //  - the number of steps to take in the x- and y-direction (the real and imaginary components)
-  // startx,endx,starty,endy : const int
+  // startx,endx,starty,endy : const double
   //  - the first and last values to sample at 
   // verbose : bool
   //  - flag to control logging to console
