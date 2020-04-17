@@ -53,8 +53,8 @@ if CUDA_ENABLED:
   _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
 
   # assign arg and return types
-  _sample_mandelbrot.argtypes=[ct.POINTER(ct.c_int),ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
-  _sample_mandelbrot.restype=ct.c_int
+  _sample_mandelbrot_cuda.argtypes=[ct.POINTER(ct.c_int),ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
+  _sample_mandelbrot_cuda.restype=ct.c_int
   _sample_newton_cuda.argtypes=[ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.c_int,ct.c_int
     ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
   _sample_newton_cuda.restype=ct.c_int
@@ -195,7 +195,7 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
   itr=c_vector(ct.c_int,y_resolution*x_resolution)
 
   # call the library function
-  limit=_sample_mandelbrot(
+  limit=_sample_mandelbrot_cuda(
     itr,ct.c_int(max_itr),ct.c_int(x_resolution),ct.c_int(y_resolution)
     ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
   )
