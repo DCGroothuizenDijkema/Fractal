@@ -35,6 +35,13 @@ inline void cuda_check(const cudaError_t code, const char *file, const int line)
   }
 }
 
+__device__ int iterate(cuDoubleComplex x, const cuDoubleComplex &c, const int max_itr);
+__global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, const int xresolution, const int yresolution
+  , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
+
+int __declspec(dllexport) sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
+  , const double startx, const double endx, const double starty, const double endy, const bool verbose);
+
 __device__ thrust::pair<cuDoubleComplex,cuDoubleComplex> polynomial_and_deriv(const cuDoubleComplex &x, const double * const coeffs
   , const int degree);
 __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const itr_taken, cuDoubleComplex x, const int degree
