@@ -122,7 +122,7 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
   Parameters
   ----------
   central_point : 1D array-like
-    - The centre of the area to.
+    - The centre of the area to visualise.
   x_span,y_span : int
     - The span across each axis, with half of the span on either side of the centre.
   x_resolution,y_resolution : int
@@ -159,6 +159,49 @@ def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_
   del tmp
   # flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(np.ctypeslib.as_array(act)),limit
+
+def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
+  '''
+  Produce a sample of the Mandelbrot Set.
+  
+  Parameters
+  ----------
+  central_point : 1D array-like
+    - The centre of the area to visualise.
+  x_span,y_span : int
+    - The span across each axis, with half of the span on either side of the centre.
+  x_resolution,y_resolution : int
+    - The number of pizels to divide the x- and y-axes into.
+  max_itr : int
+    - The number of iterations to compute before considering a point to not converge.
+  verbose : bool, optional.
+    - For verbose output.
+
+  Returns
+  -------
+  itr : 2D numpy.ndarray
+    - The number of iterations for a pixel exceed the bound.
+  limit : int
+    - The value which represents the bound was not exceeded.
+
+  '''
+  if not CUDA_ENABLED: raise CUDAWarning('CUDA library has not been implemented.')
+  # input setup
+  startx=central_point[0]-x_span/2.
+  starty=central_point[1]-y_span/2.
+  endx=central_point[0]+x_span/2.
+  endy=central_point[1]+y_span/2.
+  # array to store the iteration count for each pixel
+  itr=c_vector(ct.c_int,y_resolution*x_resolution)
+
+  # call the library function
+  limit=_sample_mandelbrot(
+    itr,ct.c_int(max_itr),ct.c_int(x_resolution),ct.c_int(y_resolution)
+    ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
+  )
+
+  # flip the rows because [startx,stary] is stored in [0,0]
+  return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(x_resolution,y_resolution))),limit
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
