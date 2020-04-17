@@ -216,7 +216,7 @@ int __declspec(dllexport) sample_newton(double *h_re, double *h_im, int *h_itr, 
   CUDA_ASSERT_SUCCESS(cudaPeekAtLastError());
   CUDA_ASSERT_SUCCESS(cudaDeviceSynchronize());
 
-  // copy back to b=host
+  // copy back to host
   CUDA_ASSERT_SUCCESS(cudaMemcpy(h_re,d_re,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
   CUDA_ASSERT_SUCCESS(cudaMemcpy(h_im,d_im,static_cast<size_t>(d_size),cudaMemcpyDeviceToHost));
   CUDA_ASSERT_SUCCESS(cudaMemcpy(h_itr,d_itr,static_cast<size_t>(i_size),cudaMemcpyDeviceToHost));
