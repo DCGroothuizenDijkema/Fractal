@@ -30,7 +30,7 @@ _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
 # extract the functions
 _sample_mandelbrot=getattr(_libc,'?sample_mandelbrot@@YAHPEAPEAHHHHHNNNN_N@Z')
 _sample_newton=getattr(_libc,'?sample_newton@@YAHPEAPEAN0PEAPEAHPEANHHHHHNNNN_N@Z')
-_assign_roots=getattr(_libc,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
+_assign_roots=getattr(_libc,'?assign_roots@@YAXQEAHQEBN111HHH@Z')
 
 # assign arg and return types
 _sample_mandelbrot.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double
@@ -39,8 +39,8 @@ _sample_mandelbrot.restype=ct.c_int
 _sample_newton.argtypes=[ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_int))
   ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
 _sample_newton.restype=ct.c_int
-_assign_roots.argtypes=[ct.POINTER(ct.POINTER(ct.c_int)),ct.POINTER(ct.POINTER(ct.c_double)),ct.POINTER(ct.POINTER(ct.c_double))
-  ,ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
+_assign_roots.argtypes=[ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_double)
+    ,ct.POINTER(ct.c_double),ct.c_int,ct.c_int,ct.c_int]
 _assign_roots.restype=None
 
 if CUDA_ENABLED:
@@ -50,7 +50,7 @@ if CUDA_ENABLED:
   # extract the functions
   _sample_mandelbrot_cuda=getattr(_libc_cuda,'?sample_mandelbrot@@YAHQEAHHHHNNNN_N@Z')
   _sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHQEAN0QEAHQEBNHHHHNNNN_N@Z')
-  _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
+  _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXQEAHQEBN111HHH@Z')
 
   # assign arg and return types
   _sample_mandelbrot_cuda.argtypes=[ct.POINTER(ct.c_int),ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
