@@ -200,8 +200,8 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
     ,ct.c_double(startx),ct.c_double(endx),ct.c_double(starty),ct.c_double(endy),ct.c_bool(verbose)
   )
 
-  # flip the rows because [startx,stary] is stored in [0,0]
-  return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(x_resolution,y_resolution))),limit
+  # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
+  return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))),limit
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
@@ -480,10 +480,10 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
   # call the library function
   _assign_roots_cuda(ind,re,im,roots_re,roots_im,ct.c_int(poly_degree),ct.c_int(x_resolution),ct.c_int(y_resolution))
 
-  # flip the rows because [startx,stary] is stored in [0,0] 
-  return np.flipud(np.reshape(roots,(x_resolution,y_resolution))) \
-    ,np.flipud(np.reshape(np.ctypeslib.as_array(ind),(x_resolution,y_resolution))) \
-    ,np.flipud(np.reshape(np.ctypeslib.as_array(itr),(x_resolution,y_resolution))) \
+  # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0] 
+  return np.flipud(np.reshape(roots,(y_resolution,x_resolution))) \
+    ,np.flipud(np.reshape(np.ctypeslib.as_array(ind),(y_resolution,x_resolution))) \
+    ,np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))) \
     ,limit
 
 def _plot_setup(fig_inches):
