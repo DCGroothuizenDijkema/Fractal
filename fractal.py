@@ -48,10 +48,13 @@ if CUDA_ENABLED:
   _libc_cuda=ct.cdll.LoadLibrary('./bin/cufractal.dll')
 
   # extract the functions
-  _sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHPEAN0PEAH0HHHHNNNN_N@Z')
-  _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXPEAHPEAN1QEBN2HHH@Z')
+  _sample_mandelbrot_cuda=getattr(_libc_cuda,'?sample_mandelbrot@@YAHQEAHHHHNNNN_N@Z')
+  _sample_newton_cuda=getattr(_libc_cuda,'?sample_newton@@YAHQEAN0QEAHQEBNHHHHNNNN_N@Z')
+  _assign_roots_cuda=getattr(_libc_cuda,'?assign_roots@@YAXQEBQEAHQEBQEBN1QEBN2HHH@Z')
 
   # assign arg and return types
+  _sample_mandelbrot.argtypes=[ct.POINTER(ct.c_int),ct.c_int,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
+  _sample_mandelbrot.restype=ct.c_int
   _sample_newton_cuda.argtypes=[ct.POINTER(ct.c_double),ct.POINTER(ct.c_double),ct.POINTER(ct.c_int),ct.POINTER(ct.c_double),ct.c_int,ct.c_int
     ,ct.c_int,ct.c_int,ct.c_double,ct.c_double,ct.c_double,ct.c_double,ct.c_bool]
   _sample_newton_cuda.restype=ct.c_int
