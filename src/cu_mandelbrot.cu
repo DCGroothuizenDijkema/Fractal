@@ -22,7 +22,18 @@ __device__ int iterate(cuDoubleComplex x, const cuDoubleComplex &c, const int ma
 }
 
 __global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, const int xresolution, const int yresolution
-  , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
+  , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose)
+{
+  // determine where we are in memory
+  const int idy=blockIdx.y*blockDim.y+threadIdx.y,idx=blockIdx.x*blockDim.x+threadIdx.x,ind=idy*xresolution+idx;
+  // check we haven't gone out of bounds
+  if (idx>=xresolution||idy>=yresolution) { return; }
+
+  // determine the current point
+  const double imag=starty+deltay*idy,real=startx+deltax*idx;
+  // determine the number of iterations
+  d_iterations[ind]=iterate(make_cuDoubleComplex(0.,0.),make_cuDoubleComplex(real,imag),max_itr);
+}
 
 int __declspec(dllexport) sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
   , const double startx, const double endx, const double starty, const double endy, const bool verbose);
