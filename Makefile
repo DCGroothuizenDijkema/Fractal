@@ -10,11 +10,15 @@ TESTFLAGS=/EHsc /std:c++17 /I/lib/boost/ /I./src/ /I./test/ /c /Fo:./obj/
 
 SRC=./src/mandelbrot.cpp ./src/newton.cpp
 CUSRC=./src/cu_newton.cu
+COMMONSRC=./src/newton_common.cpp
+
 OBJ=./obj/mandelbrot.obj ./obj/newton.obj
 CUOBJ=./obj/cu_newton.obj
+COMMONOBJ=./obj/newton_common.obj
 
 INC=./src/fractal.hpp
 CUINC=./src/cu_fractal.hpp
+COMMONINC=./src/common.hpp
 TESTINC=./test/test-newton.hpp
 
 TESTSRC=./test/test.cpp ./src/newton.cpp
@@ -40,26 +44,29 @@ dir:
 	-@ if NOT EXIST "./bin/" mkdir "./bin/"
 	-@ if NOT EXIST "./obj/" mkdir "./obj"
 
-$(TARGET):	$(OBJ)
-	$(LINK) /DLL /OUT:$(TARGET) $(OBJ)
+$(TARGET):	$(OBJ) $(COMMONOBJ)
+	$(LINK) /DLL /OUT:$(TARGET) $(OBJ) $(COMMONOBJ)
 
 $(TEST):	$(TESTOBJ)
 	$(LINK) /OUT:$(TEST) $(TESTOBJ)
 
-$(CUTARGET):	$(CUOBJ)
-	$(CU) -o $(CUTARGET) --shared $(CUOBJ)
+$(CUTARGET):	$(CUOBJ) $(COMMONOBJ)
+	$(CU) -o $(CUTARGET) --shared $(CUOBJ) $(COMMONOBJ)
 
-obj/mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
+obj/mandelbrot.obj: ./src/mandelbrot.cpp $(INC) $(COMMONINC)
 	$(CXX) $(FLAGS) ./src/mandelbrot.cpp
 
-obj/newton.obj: ./src/newton.cpp $(INC)
+obj/newton.obj: ./src/newton.cpp $(INC) $(COMMONINC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
 
 # obj/cu_mandelbrot.obj: ./src/mandelbrot.cpp $(INC)
 #  $(CU) -c -o ./obj/cumandelbrot.obj -I./src/ ./src/mandelbrot.cpp
 
-obj/cu_newton.obj: ./src/cu_newton.cu $(CUINC)
+obj/cu_newton.obj: ./src/cu_newton.cu $(CUINC) $(COMMONINC)
 	$(CU) -c -o ./obj/cu_newton.obj -I./src/ ./src/cu_newton.cu
+
+obj/newton_common.obj: ./src/cu_newton.cu $(COMMONINC)
+	$(CXX) $(FLAGS) ./src/newton_common.cpp
 
 obj/test.obj: ./test/test.cpp $(INC) $(TESTINC)
   $(CXX) $(TESTFLAGS) ./test/test.cpp
