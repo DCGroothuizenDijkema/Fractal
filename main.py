@@ -11,7 +11,7 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
-from fractal import sample_mandelbrot,sample_mandelbrot_cuda,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
+from fractal import sample_mandelbrot,sample_mandelbrot_cuda,sample_julia_cuda,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
@@ -70,9 +70,19 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',frac
   elif example=='zoom_level_three':
     span=0.0011439
     centre=(-0.7439668,0.1314023)
+  elif example=='bulb_zero':
+    dx=2
+    dy=2
+    span=0.117
+    centre=(0.335,0.59)
+  elif example=='bulb_one':
+    dx=2
+    dy=2
+    span=0.102
+    centre=(-0.553,0.615)
   else:
     # invalid example
-    examples=['zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three']
+    examples=['zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three','bulb_zero','bulb_one']
     raise ValueError('`example` must be one of {}'.format(examples))
   
   # determine the fractal
