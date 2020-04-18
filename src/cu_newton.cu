@@ -186,18 +186,20 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
   const double deltax=(endx-startx)/xresolution,deltay=(endy-starty)/yresolution;
   const int total=xresolution*yresolution;
   // memory parameters
-  const int c_size=(degree+1)*sizeof(double),d_size=total*sizeof(double),i_size=total*sizeof(int);
+  const size_t c_size=(degree+1)*sizeof(double),d_size=total*sizeof(double),i_size=total*sizeof(int);
 
   // device memory pointers
   double *d_re=nullptr,*d_im=nullptr,*d_coeffs=nullptr;
   int *d_itr=nullptr;
+  
   // allocate device memory
-  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),static_cast<size_t>(d_size)));
-  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),static_cast<size_t>(d_size)));
-  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),static_cast<size_t>(c_size)));
-  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),static_cast<size_t>(i_size)));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),d_size));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),d_size));
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),i_size));
+
+  CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),c_size));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(d_coeffs,h_coeffs,c_size,cudaMemcpyHostToDevice));
   // copy polynomial coefficients over
-  cudaMemcpy(d_coeffs,h_coeffs,static_cast<size_t>(c_size),cudaMemcpyHostToDevice);
 
   // GPU memory setup
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
@@ -223,6 +225,10 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
     std::cout << total << " points processed." << std::endl
       << "Time taken: " << elapsed/1000 << "s." << std::endl;
   }
+
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_re,d_re,d_size,cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_im,d_im,d_size,cudaMemcpyDeviceToHost));
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(h_itr,d_itr,i_size,cudaMemcpyDeviceToHost));
 
   // free GPU memory
   CUDA_REQUIRE_SUCCESS(cudaFree(d_re));
