@@ -15,7 +15,7 @@ int iterate(std::complex<double> x, const std::complex<double> &c, const int max
 {
   //
   // Iterate a given number under x^2 + c until its absolute value becomes greater than 2 or the maximum number of iterations is reached
-  // If the absolute value of x does not become greater than 2, x is contained within the mandelbrot set
+  // If the absolute value of x does not become greater than 2, x is contained within the Mandelbrot Set
   //
   // parameters
   // ----------
@@ -45,13 +45,13 @@ void compute_mandelbrot_range(int **iterations, const int max_itr, const int xre
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose)
 {
   //
-  // Determine if a given set of numbers in a given subset of the complex plane are contained within the mandelbrot set through iteration
+  // Determine if a given set of numbers in a given subset of the complex plane are contained within the Mandelbrot Set through iteration
   // The given subset belongs to a larger space to actually be computed, handled by other threads
   //
   // parameters
   // ----------
   // iterations : int **
-  //  - 2D array to write out either the number of iterations needed to show a number is not in the mandelbrot set, or a marker that this
+  //  - 2D array to write out either the number of iterations needed to show a number is not in the Mandelbrot Set, or a marker that this
   //    could not be shown
   // max_itr : const int
   //  - the maximum number of iterations allowed
@@ -92,12 +92,12 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
   , const bool verbose)
 {
   //
-  // Determine if numbers in a given subset of the complex plane are contained within the mandelbrot set through iteration
+  // Determine if numbers in a given subset of the complex plane are contained within the Mandelbrot Set through iteration
   //
   // parameters
   // ----------
   // iterations : int **
-  //  - 2D array to write out either the number of iterations needed to show a number is not in the mandelbrot set, or a marker that this
+  //  - 2D array to write out either the number of iterations needed to show a number is not in the Mandelbrot Set, or a marker that this
   //    could not be shown
   // max_itr : const int
   //  - the maximum number of iterations allowed
@@ -113,7 +113,7 @@ int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr,
   // returns
   // -------
   // int
-  //  - the value which marks that a starting point could not be shown to not be in the mandelbrot set
+  //  - the value which marks that a starting point could not be shown to not be in the Mandelbrot Set
   //
 
   // determine step sizing in the x- and y-direction

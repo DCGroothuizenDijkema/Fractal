@@ -153,7 +153,8 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
   , const double starty, const double endy, const bool verbose)
 {
   //
-  // Determine the roots of a polynomial the numbers in a given subset of the complex plane converge to with Newton's method
+  // Determine the roots of a polynomial the numbers in a given subset of the complex plane converge to with Newton's method, with CUDA
+  // acceleration
   //
   // parameters
   // ----------
