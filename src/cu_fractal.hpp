@@ -44,8 +44,9 @@ __global__ void compute_julia(int * const d_iterations, const cuDoubleComplex &c
 
 int __declspec(dllexport) sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
   , const double startx, const double endx, const double starty, const double endy, const bool verbose);
-int __declspec(dllexport) sample_julia(int * const h_itr, const int max_itr, const int xresolution, const int yresolution
-  , const double startx, const double endx, const double starty, const double endy, const bool verbose);
+int __declspec(dllexport) sample_julia(int * const h_itr, const double re, const double im, const int max_itr
+  , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy
+  , const bool verbose);
 
 __device__ thrust::pair<cuDoubleComplex,cuDoubleComplex> polynomial_and_deriv(const cuDoubleComplex &x, const double * const coeffs
   , const int degree);
