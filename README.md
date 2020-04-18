@@ -7,7 +7,7 @@ An Exploration of Fractal Geometry
 
 This is a personal project made to better understand some examples of fractal geometry. At this stage, this is limited to Newton's fractals and the Mandelbrot Set. The purpose of this programme is not to provide a novel way to explore these objects, only for my personal edification in C++ programming, interfacing with Python, and visualisation.
 
-This repository also includes the code to produce Newton's fractals implemented with CUDA, done to teach myself the basics of GPU programming. They were written for a NVidia GeForce GTX 1060. However, my understanding of GPU programming at this stage is that I can make no claims that the code will work or even compile on other CUDA compatible GPUs, or the same GPU on a different computer.
+This repository also includes the code to produce both fractals implemented with CUDA, done to teach myself the basics of GPU programming. They were written for a NVidia GeForce GTX 1060. However, my understanding of GPU programming at this stage is that I can make no claims that the code will work or even compile on other CUDA compatible GPUs, or the same GPU on a different computer.
 
 ## Output
 
