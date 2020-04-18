@@ -39,7 +39,7 @@ inline void cuda_check(const cudaError_t code, const char * const file, const ch
 __device__ int iterate(cuDoubleComplex x, const cuDoubleComplex &c, const int max_itr);
 __global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, const int xresolution, const int yresolution
   , const double startx, const double starty, const double deltax, const double deltay);
-__global__ void compute_julia(int * const d_iterations, const cuDoubleComplex &c, const int max_itr
+__global__ void compute_julia(int * const d_iterations, const double re, const double im, const int max_itr
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay);
 
 int __declspec(dllexport) sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
