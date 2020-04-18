@@ -35,6 +35,12 @@ __global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, 
   d_iterations[ind]=iterate(make_cuDoubleComplex(0.,0.),make_cuDoubleComplex(real,imag),max_itr);
 }
 
+__global__ void compute_julia(int * const d_iterations, const cuDoubleComplex &c, const int max_itr
+  , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
+{
+  
+}
+
 int __declspec(dllexport) sample_mandelbrot(int * const h_itr, const int max_itr, const int xresolution, const int yresolution
   , const double startx, const double endx, const double starty, const double endy, const bool verbose)
 {
@@ -80,5 +86,11 @@ int __declspec(dllexport) sample_mandelbrot(int * const h_itr, const int max_itr
   // free GPU memory
   CUDA_REQUIRE_SUCCESS(cudaFree(d_itr));
 
+  return NPP_MAX_32S;
+}
+
+int __declspec(dllexport) sample_julia(int * const h_itr, const int max_itr, const int xresolution, const int yresolution
+  , const double startx, const double endx, const double starty, const double endy, const bool verbose)
+{
   return NPP_MAX_32S;
 }
