@@ -11,7 +11,36 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
-from fractal import sample_mandelbrot,sample_mandelbrot_cuda,sample_julia_cuda,plot_mandelbrot,sample_newton,sample_newton_cuda,plot_newton
+from fractal import (sample_mandelbrot,sample_newton,sample_julia_cuda,sample_mandelbrot_cuda,sample_newton_cuda
+  ,plot_mandelbrot,plot_newton)
+
+def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True,file_name='julia.pdf'
+  ,dpi=1200,verbose=False):
+  '''
+  Calculate a Julia Set and produce a visualisation of it.
+  
+  Parameters
+  ----------
+  example : string, optional
+    - The named example to produce
+      One of: 'julia_zero'
+  fractal_resolution : int, optional
+    - The number of pixels to use in the calculation
+  limit : int, optional
+    - The maximum number of iterations allowed
+  show_fig : bool, optional
+    - If the visualisation should be shown.
+  save_fig : bool, optional
+    - If the visualisation should be saved.
+  file_name : string, optional
+    - The name of the output.
+  dpi : int, optional
+    - Plot resolution.
+  verbose : bool, optional.
+    - For verbose output.
+
+  '''
+  pass
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
@@ -22,7 +51,7 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',frac
   ----------
   example : string, optional
     - The named example to produce
-      One of: 'zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three'
+      One of: 'zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three','bulb_zero','bulb_one'
   method : string, optional
     - If the CPU or GPU should be used to perform the calculations
       One of: 'cpu', 'gpu'
