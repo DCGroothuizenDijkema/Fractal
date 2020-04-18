@@ -38,7 +38,15 @@ __global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, 
 __global__ void compute_julia(int * const d_iterations, const cuDoubleComplex &c, const int max_itr
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay)
 {
-  
+  // determine where we are in memory
+  const int idy=blockIdx.y*blockDim.y+threadIdx.y,idx=blockIdx.x*blockDim.x+threadIdx.x,ind=idy*xresolution+idx;
+  // check we haven't gone out of bounds
+  if (idx>=xresolution||idy>=yresolution) { return; }
+
+  // determine the current point
+  const double imag=starty+deltay*idy,real=startx+deltax*idx;
+  // determine the number of iterations
+  d_iterations[ind]=iterate(make_cuDoubleComplex(real,imag),c,max_itr);
 }
 
 int __declspec(dllexport) sample_mandelbrot(int * const h_itr, const int max_itr, const int xresolution, const int yresolution
