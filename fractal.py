@@ -391,6 +391,8 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   )
 
   del tmp_itr
+  del tmp_re
+  del tmp_im
   # convert roots to a numpy array
   roots=1j*np.ctypeslib.as_array(act_im)
   roots+=np.ctypeslib.as_array(act_re)
@@ -401,16 +403,20 @@ def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,m
   roots_re=c_vector(ct.c_double,len(actuals),np.real(actuals))
   roots_im=c_vector(ct.c_double,len(actuals),np.imag(actuals))
   # array to store which root the approximation is
-  tmp_ind,act_ind=c_matrix(ct.c_int,y_resolution,x_resolution)
+  ind=c_vector(ct.c_int,y_resolution*x_resolution)
   
+  # we can't use `act_re` and `act_im` because they're 2d and we need a 1d vector
+  total=x_resolution*y_resolution
+  re=c_vector(ct.c_double,total,np.real(roots.flatten()))
+  im=c_vector(ct.c_double,total,np.imag(roots.flatten()))
   # call the library function
-  _assign_roots(tmp_ind,tmp_re,tmp_im,roots_re,roots_im,ct.c_int(poly_degree),ct.c_int(x_resolution),ct.c_int(y_resolution))
+  _assign_roots(ind,re,im,roots_re,roots_im,ct.c_int(poly_degree),ct.c_int(x_resolution),ct.c_int(y_resolution))
 
-  del tmp_re
-  del tmp_im
-
-  # flip the rows because [startx,stary] is stored in [0,0]
-  return np.flipud(roots),np.flipud(np.ctypeslib.as_array(act_ind)),np.flipud(np.ctypeslib.as_array(act_itr)),limit
+  # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0] 
+  return np.flipud(roots) \
+    ,np.flipud(np.reshape(np.ctypeslib.as_array(ind),(y_resolution,x_resolution))) \
+    ,np.flipud(np.ctypeslib.as_array(act_itr)) \
+    ,limit
 
 def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   '''
