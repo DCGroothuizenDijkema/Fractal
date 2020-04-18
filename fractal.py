@@ -21,8 +21,8 @@ from matplotlib.colors import ListedColormap
 
 from huygens.interf import c_matrix,c_vector,c_pointer
 
-__all__=['sample_mandelbrot','plot_mandelbrot','sample_newton','sample_newton_cuda','plot_newton','plot_newton_roots'
-  ,'plot_newton_iteration']
+__all__=['sample_mandelbrot','sample_newton','sample_julia_cuda','sample_mandelbrot_cuda','sample_newton_cuda'
+  ,'plot_mandelbrot','plot_newton','plot_newton_roots','plot_newton_iteration']
 
 # load the lib
 _libc=ct.cdll.LoadLibrary('./bin/fractal.dll')
@@ -70,13 +70,14 @@ if CUDA_ENABLED:
 class CUDAWarning(Exception):
   '''
   An error to raise when a CUDA library doesn't exist
+  
   '''
   pass
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
   '''
-  Produce a plot of the Mandelbrot Set, coloured by the number of iterations taken.
+  Produce a plot of the Mandelbrot Set or a Julia Set, coloured by the number of iterations taken.
   
   Parameters
   ----------
