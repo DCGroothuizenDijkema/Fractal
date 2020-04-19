@@ -76,7 +76,7 @@ class CUDAWarning(Exception):
   pass
 
 class JuliaAnimation(object):
-  def __init__(self,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True):
+  def __init__(self,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
     self.c=c
     self.centre=central_point
     self.dx=dx
@@ -86,6 +86,10 @@ class JuliaAnimation(object):
     self.max_itr=max_itr
     self.verbose=verbose
     self.log=log
+    if color_map is None:
+      self.color_map=cm.Spectral_r
+    else:
+      self.color_map=color_map
 
   def julia_set(self,itr):
     iterations,limit=sample_julia_cuda(
@@ -587,7 +591,18 @@ def _julia_frame(itr,animation):
   '''
 
   '''
-  pass
+  iterations,limit=animation.julia_set(itr)
+
+  if animation.log:
+    iterations=np.log(iterations)
+    limit=np.log(limit)
+
+  masked_iterations=np.ma.masked_where(iterations==limit,iterations)
+  color_map=animation.color_map
+  color_map.set_bad(color='black')
+
+  im=plt.imshow(masked_iterations,cmap=color_map)
+  return im,
 
 def _plot_setup(fig_inches):
   '''
