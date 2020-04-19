@@ -25,13 +25,16 @@
 
 #include <common.hpp>
 
-#define CUDA_REQUIRE_SUCCESS(ans) { cuda_check((ans),__FILE__,__func__,__LINE__); }
-inline void cuda_check(const cudaError_t code, const char * const file, const char * const func,const int line)
+#define CUDA_REQUIRE_SUCCESS(ans) { cuda_check((ans),__FILE__,__func__,#ans,__LINE__); }
+inline void cuda_check(const cudaError_t code, const char * const file, const char * const func, const char * const call, const int line)
 {
   if (code!=cudaSuccess)
   {
-    std::cerr << "CUDA ERROR (" << code << ": " << cudaGetErrorName(code) << "): " << cudaGetErrorString(code) << " (" << file << ":" 
-      << func << ":" << line << ")" << std::endl;
+    std::cerr << file << ":" << line << ": CUDA ERROR (" << code << "): " << cudaGetErrorName(code) << ": " << cudaGetErrorString(code) 
+      << std::endl << "  " << func << "()" << std::endl
+      << "  {" << std::endl
+      << "    " << call << std::endl
+      << "  }" << std::endl;
     exit(code);
   }
 }
