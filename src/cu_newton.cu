@@ -235,6 +235,7 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
   CUDA_REQUIRE_SUCCESS(cudaFree(d_re));
   CUDA_REQUIRE_SUCCESS(cudaFree(d_im));
   CUDA_REQUIRE_SUCCESS(cudaFree(d_itr));
+  CUDA_REQUIRE_SUCCESS(cudaFree(d_coeffs));
 
   return NPP_MAX_32S;
 }
