@@ -76,7 +76,23 @@ class CUDAWarning(Exception):
   pass
 
 class JuliaAnimation(object):
-  pass
+  def __init__(self,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True):
+    self.c=c
+    self.centre=central_point
+    self.dx=dx
+    self.dy=dy
+    self.span=span
+    self.fractal_resolution=fractal_resolution
+    self.max_itr=max_itr
+    self.verbose=verbose
+    self.log=log
+
+  def julia_set(self,itr):
+    iterations,limit=sample_julia_cuda(
+      self.c[itr],self.centre,self.dx*self.span,self.dy*self.span
+      ,self.dx*self.fractal_resolution,self.dy*self.fractal_resolution,self.max_itr,self.verbose
+    )
+    return iterations,limit
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
@@ -213,27 +229,14 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
   # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))),limit
 
-def animate_julia(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False,log=True,file_name='mandelbrot.pdf'
-  ,fig_inches=(12,12),dpi=1200,color_map=None):
+def animate_julia(anim,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200,color_map=None):
   '''
   Produce an animation of a sequence of Julia Sets, coloured by the number of iterations taken.
   
   Parameters
   ----------
-  c : complex, array-like
-    - The sequence of complex numbers to find the Julia Set of.
-  central_point : 1D array-like
-    - The centre of the area to visualise.
-  x_span,y_span : int
-    - The span across each axis, with half of the span on either side of the centre.
-  x_resolution,y_resolution : int
-    - The number of pizels to divide the x- and y-axes into.
-  max_itr : int
-    - The number of iterations to compute before considering a point to not converge.
-  verbose : bool, optional.
-    - For verbose output.
-  log : bool, optional 
-    - If the number of iterations should be logged.
+  anim : JuliaAnimation
+    - The animation to produce
   file_name : string, optional
     - The name of the output.
   fig_inches : tuple, optional
