@@ -16,6 +16,7 @@ import ctypes as ct
 import numpy as np
 
 import matplotlib.pyplot as plt
+import matplotlib.animation as amt
 import matplotlib.cm as cm
 from matplotlib.colors import ListedColormap
 
@@ -72,6 +73,9 @@ class CUDAWarning(Exception):
   An error to raise when a CUDA library doesn't exist
   
   '''
+  pass
+
+class JuliaAnimation(object):
   pass
 
 def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200
@@ -240,7 +244,7 @@ def animate_julia(c,central_point,x_span,y_span,x_resolution,y_resolution,max_it
     - The colours to use in the visualisation.
 
   '''
-  pass
+  _,ax=_plot_setup(fig_inches)
 
 def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   '''
@@ -575,6 +579,12 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
     ,np.flipud(np.reshape(np.ctypeslib.as_array(ind),(y_resolution,x_resolution))) \
     ,np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))) \
     ,limit
+
+def _julia_frame(itr,animation):
+  '''
+
+  '''
+  pass
 
 def _plot_setup(fig_inches):
   '''
