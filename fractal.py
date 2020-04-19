@@ -126,7 +126,7 @@ def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_
     - The colours to use in the visualisation.
 
   '''
-  _,ax=_plot_setup(fig_inches)
+  fig,ax=_plot_setup(fig_inches)
 
   if log:
     iterations=np.log(iterations)
@@ -145,6 +145,8 @@ def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_
     plt.show()
   if save_fig:
     plt.savefig(file_name,dpi=dpi)
+
+  return fig,ax
 
 def sample_mandelbrot(central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
   '''
@@ -252,10 +254,12 @@ def animate_julia(animation,fps=30,file_name='julia.mp4',fig_inches=(12,12),dpi=
     - Plot resolution.
 
   '''
-  fig,_=_plot_setup(fig_inches)
+  fig,ax=_plot_setup(fig_inches)
 
   anim=amt.FuncAnimation(fig,_julia_frame,frames=animation.frames,blit=True,fargs=(animation,))
   anim.save(file_name,fps=fps,extra_args=['-vcodec','libx264'],dpi=dpi)
+
+  return fig,ax,anim
 
 def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   '''
@@ -323,7 +327,7 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
     - Plot resolution.
 
   '''
-  _,ax=_plot_setup(fig_inches)
+  fig,ax=_plot_setup(fig_inches)
 
   # black out where no root could be found and set color map
   masked_roots=np.ma.masked_where(roots==-1,roots)
@@ -337,6 +341,8 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
     plt.show()
   if save_fig:
     plt.savefig(file_name,dpi=dpi)
+
+  return fig,ax
 
 def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True,file_name='newtons_fractal_iterations.pdf'
   ,fig_inches=(12,12),dpi=1200,color_map=None):
@@ -363,7 +369,7 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     - Plot resolution.
   
   '''
-  _,ax=_plot_setup(fig_inches)
+  fig,ax=_plot_setup(fig_inches)
   
   if log:
     iterations=np.log(iterations)
@@ -381,6 +387,8 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     plt.show()
   if save_fig:
     plt.savefig(file_name,dpi=dpi)
+
+  return fig,ax  
 
 def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
   '''
@@ -410,7 +418,7 @@ def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=T
     - Plot resolution.
   
   '''
-  _,ax=_plot_setup(fig_inches)
+  fig,ax=_plot_setup(fig_inches)
 
   # find all unique roots by the index values, ignoring where no root was found
   unique_roots=np.unique(roots)
@@ -434,6 +442,8 @@ def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=T
     plt.show()
   if save_fig:
     plt.savefig(file_name,dpi=dpi)
+
+  return fig,ax
 
 def sample_newton(coeffs,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,num_threads=1,verbose=False):
   '''
