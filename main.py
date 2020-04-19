@@ -11,6 +11,8 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
+from numpy import pi,e
+
 from fractal import (sample_mandelbrot,sample_newton,sample_julia_cuda,sample_mandelbrot_cuda,sample_newton_cuda
   ,plot_mandelbrot,plot_newton)
 
@@ -40,7 +42,32 @@ def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,lim
     - For verbose output.
 
   '''
-  pass
+  # constant figure parameters
+  dx=3
+  dy=2
+
+  # get example parameters
+  if example=='julia_zero':
+    span=1.5
+    centre=(0.,0.)
+    c=0.7885*e**(1j*0.96*pi)
+  elif example=='julia_one':
+    span=1.5
+    centre=(0.,0.)
+    c=0.37-1j*0.35
+  elif example=='julia_two':
+    span=1.05
+    centre=(0.,0.)
+    c=-0.62+1j*0.42
+  else:
+    # invalid example
+    examples=['julia_zero','julia_one','julia_two']
+    raise ValueError('`example` must be one of {}'.format(examples))
+
+  # determine the fractal
+  iterations,limit=sample_julia_cuda(c,centre,dx*span,dy*span,dx*fractal_resolution,dy*fractal_resolution,limit,verbose=True)
+  # produce the visualisation
+  plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
@@ -113,8 +140,6 @@ def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',frac
     # invalid example
     examples=['zoom_level_zero','zoom_level_one','zoom_level_two','zoom_level_three','bulb_zero','bulb_one']
     raise ValueError('`example` must be one of {}'.format(examples))
-  
-  # determine the fractal
   
   # determine the fractal
   if method=='gpu':
@@ -229,3 +254,4 @@ def produce_newton_visualisation(example='cubic_zero',method='cpu',fractal_resol
 if __name__=='__main__':
   produce_mandelbrot_visualisation()
   produce_newton_visualisation()
+  produce_julia_visualisation()
