@@ -69,6 +69,10 @@ def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,lim
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
+def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1000,anim_steps=100,stream='preprocess',show_anim=False
+  ,save_anim=True,file_name='julia.mp4',dpi=1200,verbose=False):
+  pass
+
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
   '''
@@ -252,6 +256,8 @@ def produce_newton_visualisation(example='cubic_zero',method='cpu',fractal_resol
   plot_newton(idx,itr,limit,colors,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
 if __name__=='__main__':
-  produce_mandelbrot_visualisation()
-  produce_newton_visualisation()
-  produce_julia_visualisation()
+  # produce_mandelbrot_visualisation()
+  # produce_newton_visualisation()
+  # produce_julia_visualisation()
+  # produce_julia_animation()
+  pass
