@@ -197,10 +197,10 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
   CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_re),d_size));
   CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_im),d_size));
   CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_itr),i_size));
-
   CUDA_REQUIRE_SUCCESS(cudaMalloc(reinterpret_cast<void **>(&d_coeffs),c_size));
-  CUDA_REQUIRE_SUCCESS(cudaMemcpy(d_coeffs,h_coeffs,c_size,cudaMemcpyHostToDevice));
+
   // copy polynomial coefficients over
+  CUDA_REQUIRE_SUCCESS(cudaMemcpy(d_coeffs,h_coeffs,c_size,cudaMemcpyHostToDevice));
 
   // GPU memory setup
   const dim3 dim_block(32,32),dim_grid((xresolution+dim_block.x-1)/dim_block.x,(yresolution+dim_block.y-1)/dim_block.y);
