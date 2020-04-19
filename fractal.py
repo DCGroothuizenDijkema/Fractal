@@ -209,6 +209,39 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
   # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))),limit
 
+def animate_julia(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False,log=True,file_name='mandelbrot.pdf'
+  ,fig_inches=(12,12),dpi=1200,color_map=None):
+  '''
+  Produce an animation of a sequence of Julia Sets, coloured by the number of iterations taken.
+  
+  Parameters
+  ----------
+  c : complex, array-like
+    - The sequence of complex numbers to find the Julia Set of.
+  central_point : 1D array-like
+    - The centre of the area to visualise.
+  x_span,y_span : int
+    - The span across each axis, with half of the span on either side of the centre.
+  x_resolution,y_resolution : int
+    - The number of pizels to divide the x- and y-axes into.
+  max_itr : int
+    - The number of iterations to compute before considering a point to not converge.
+  verbose : bool, optional.
+    - For verbose output.
+  log : bool, optional 
+    - If the number of iterations should be logged.
+  file_name : string, optional
+    - The name of the output.
+  fig_inches : tuple, optional
+    - The size of the figure.
+  dpi : int, optional
+    - Plot resolution.
+  color_map : matplotlib.colors.ListedColormap
+    - The colours to use in the visualisation.
+
+  '''
+  pass
+
 def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   '''
   Produce a sample of the Julia set of a given complex number with CUDA acceleration.
@@ -216,7 +249,7 @@ def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,ma
   Parameters
   ----------
   c : complex
-    - The complex number to find the julia set of.
+    - The complex number to find the Julia Set of.
   central_point : 1D array-like
     - The centre of the area to visualise.
   x_span,y_span : int
@@ -253,7 +286,6 @@ def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,ma
 
   # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(np.reshape(np.ctypeslib.as_array(itr)+1,(y_resolution,x_resolution))),limit
-
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
   ,color_map=None):
