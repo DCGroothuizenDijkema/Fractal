@@ -69,8 +69,28 @@ def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,lim
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
-def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1000,anim_steps=100,stream='preprocess',show_anim=False
-  ,save_anim=True,file_name='julia.mp4',dpi=1200,verbose=False):
+def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1000,file_name='julia.mp4',dpi=1200,verbose=False):
+  '''
+  Calculate a series Julia Sets and produce an animation of them.
+  This animation is saved to an MP4, and is not displayed due to computation and timing.
+  
+  Parameters
+  ----------
+  example : string, optional
+    - The named example to produce
+      One of: 'julia_zero'
+  fractal_resolution : int, optional
+    - The number of pixels to use in the calculation
+  limit : int, optional
+    - The maximum number of iterations allowed
+  file_name : string, optional
+    - The name of the output.
+  dpi : int, optional
+    - Plot resolution.
+  verbose : bool, optional.
+    - For verbose output.
+
+  '''
   pass
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
