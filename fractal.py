@@ -252,7 +252,7 @@ def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,ma
   )
 
   # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
-  return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))),limit
+  return np.flipud(np.reshape(np.ctypeslib.as_array(itr)+1,(y_resolution,x_resolution))),limit
 
 
 def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_fractal_roots.pdf',fig_inches=(12,12),dpi=1200
