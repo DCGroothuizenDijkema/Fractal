@@ -76,7 +76,8 @@ class CUDAWarning(Exception):
   pass
 
 class JuliaAnimation(object):
-  def __init__(self,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
+  def __init__(self,frames,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
+    self.frames=frames
     self.c=c
     self.centre=central_point
     self.dx=dx
@@ -233,25 +234,28 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
   # reshape into a 2D array and flip the rows because [startx,stary] is stored in [0,0]
   return np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))),limit
 
-def animate_julia(anim,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200,color_map=None):
+def animate_julia(animation,fps=30,file_name='julia.mp4',fig_inches=(12,12),dpi=1200):
   '''
   Produce an animation of a sequence of Julia Sets, coloured by the number of iterations taken.
   
   Parameters
   ----------
-  anim : JuliaAnimation
+  animation : JuliaAnimation
     - The animation to produce
+  fps : int
+    - Frames per second.
   file_name : string, optional
     - The name of the output.
   fig_inches : tuple, optional
     - The size of the figure.
   dpi : int, optional
     - Plot resolution.
-  color_map : matplotlib.colors.ListedColormap
-    - The colours to use in the visualisation.
 
   '''
-  _,ax=_plot_setup(fig_inches)
+  fig,_=_plot_setup(fig_inches)
+
+  anim=amt.FuncAnimation(fig,_julia_frame,frames=animation.frames,blit=True,fargs=(animation,))
+  anim.save(file_name,fps=fps,extra_args=['-vcodec','libx264'],dpi=dpi)
 
 def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,max_itr,verbose=False):
   '''
@@ -587,10 +591,11 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
     ,np.flipud(np.reshape(np.ctypeslib.as_array(itr),(y_resolution,x_resolution))) \
     ,limit
 
-def _julia_frame(itr,animation):
+def _julia_frame(itr,*anim):
   '''
 
   '''
+  animation,=anim
   iterations,limit=animation.julia_set(itr)
 
   if animation.log:
