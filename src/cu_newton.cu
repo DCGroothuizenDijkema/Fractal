@@ -89,11 +89,7 @@ __device__ cuDoubleComplex newton_root(const double * const coeffs, int * const 
       return x;
     }
     // derivative is flat and we can't update
-    if (cuCreal(g_x)==0.&&cuCimag(g_x)==0.)
-    {
-      *itr_taken=NPP_MAX_32S;
-      return make_cuDoubleComplex(CUDART_INF,CUDART_INF);
-    }
+    if (cuCreal(g_x)==0.&&cuCimag(g_x)==0.) { break; }
     // update
     x=cuCsub(x,cuCdiv(f_x,g_x));
   }
