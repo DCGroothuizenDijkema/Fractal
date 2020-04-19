@@ -125,6 +125,13 @@ def plot_mandelbrot(iterations,limit,log=True,show_fig=False,save_fig=True,file_
   color_map : matplotlib.colors.ListedColormap
     - The colours to use in the visualisation.
 
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
+
   '''
   fig,ax=_plot_setup(fig_inches)
 
@@ -217,6 +224,11 @@ def sample_mandelbrot_cuda(central_point,x_span,y_span,x_resolution,y_resolution
   limit : int
     - The value which represents the bound was not exceeded.
 
+  Raises
+  ------
+  CUDAWarning
+    - If no CUDA implementation is enabled
+
   '''
   if not CUDA_ENABLED: raise CUDAWarning('CUDA library has not been implemented.')
   # input setup
@@ -253,6 +265,15 @@ def animate_julia(animation,fps=30,file_name='julia.mp4',fig_inches=(12,12),dpi=
   dpi : int, optional
     - Plot resolution.
 
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
+  anim : matplotlib.animation.FuncAnimation
+    The produced animation
+
   '''
   fig,ax=_plot_setup(fig_inches)
 
@@ -286,6 +307,11 @@ def sample_julia_cuda(c,central_point,x_span,y_span,x_resolution,y_resolution,ma
     - The number of iterations for a pixel exceed the bound.
   limit : int
     - The value which represents the bound was not exceeded.
+
+  Raises
+  ------
+  CUDAWarning
+    - If no CUDA implementation is enabled
 
   '''
   if not CUDA_ENABLED: raise CUDAWarning('CUDA library has not been implemented.')
@@ -325,6 +351,13 @@ def plot_newton_roots(roots,show_fig=False,save_fig=True,file_name='newtons_frac
     - The size of the figure.
   dpi : int, optional
     - Plot resolution.
+
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
 
   '''
   fig,ax=_plot_setup(fig_inches)
@@ -367,6 +400,13 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
     - The size of the figure.
   dpi : int, optional
     - Plot resolution.
+
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
   
   '''
   fig,ax=_plot_setup(fig_inches)
@@ -416,6 +456,13 @@ def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=T
     - The size of the figure.
   dpi : int, optional
     - Plot resolution.
+
+  Returns
+  -------
+  fig : matplotlib.figure.Figure
+    A blank Figure
+  ax : matplotlib.axes.Axis
+    The Axis of `fig`
   
   '''
   fig,ax=_plot_setup(fig_inches)
@@ -556,6 +603,11 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
     - The number of iterations for a pixel to converge to a root.
   limit : int
     - The value which represents no root was converged to.
+
+  Raises
+  ------
+  CUDAWarning
+    - If no CUDA implementation is enabled
 
   '''
   if not CUDA_ENABLED: raise CUDAWarning('CUDA library has not been implemented.')
