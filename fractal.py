@@ -655,19 +655,39 @@ def sample_newton_cuda(coeffs,central_point,x_span,y_span,x_resolution,y_resolut
 
 def _julia_frame(itr,*anim):
   '''
+  Internal function to produce a frame of a Julia Set animation.
+
+  Parameters
+  ----------
+  itr : int
+    - The iteration count of the frame.
+  *anim : tuple
+    - Non-keyword variable arguments of the form (JuliaAnimation,)
+
+  Returns
+  -------
+  im, : tuple
+    - A tuple with the produced frame, of the form (AxesImage,)
 
   '''
+  # extract the animation
   animation,=anim
+  if animation.verbose: print('Itr: {} of {}'.format(itr,animation.frames))
+  
+  # get the julia set
   iterations,limit=animation.julia_set(itr)
 
   if animation.log:
     iterations=np.log(iterations)
     limit=np.log(limit)
 
+  # black out where the limit could not be found (in the julia set)
+  # and set color map
   masked_iterations=np.ma.masked_where(iterations==limit,iterations)
   color_map=animation.color_map
   color_map.set_bad(color='black')
 
+  # produce the frame and return it in a tuple.
   im=plt.imshow(masked_iterations,cmap=color_map)
   return im,
 
