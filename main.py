@@ -11,10 +11,10 @@
 
 from matplotlib.colors import LinearSegmentedColormap
 
-from numpy import pi,e
+from numpy import pi,e,linspace
 
 from fractal import (sample_mandelbrot,sample_newton,sample_julia_cuda,sample_mandelbrot_cuda,sample_newton_cuda
-  ,plot_mandelbrot,plot_newton)
+  ,plot_mandelbrot,plot_newton,JuliaAnimation,animate_julia)
 
 def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True,file_name='julia.pdf'
   ,dpi=1200,verbose=False):
@@ -69,10 +69,14 @@ def produce_julia_visualisation(example='julia_zero',fractal_resolution=3001,lim
   # produce the visualisation
   plot_mandelbrot(iterations,limit,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi,show_fig=show_fig,save_fig=save_fig)
 
-def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1000,file_name='julia.mp4',dpi=1200,verbose=False):
+def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1000,file_name='julia1.mp4',dpi=1200,verbose=False):
   '''
   Calculate a series Julia Sets and produce an animation of them.
   This animation is saved to an MP4, and is not displayed due to computation and timing.
+
+  Note that this function is computationally intensive. To make (relatively) quick animations, it might be best to make a custom funtion
+  based on how this function produces the animations, but with lower resolution and frame counts. Then, increase the resolution to produce
+  the final animation.
   
   Parameters
   ----------
@@ -86,12 +90,31 @@ def produce_julia_animation(example='julia_zero',fractal_resolution=3001,limit=1
   file_name : string, optional
     - The name of the output.
   dpi : int, optional
-    - Plot resolution.
+    - Animation resolution.
   verbose : bool, optional.
     - For verbose output.
 
   '''
-  pass
+  # constant figure parameters
+  n_frame=84
+  dx=2
+  dy=2
+  span=2
+  fps=30
+
+  if example=='julia_zero':
+    centre=(0.,0.)
+    steps=linspace(0,2*pi,n_frame)
+    c=0.7*e**(1j*steps)
+  else:
+    # invalid example
+    examples=['julia_zero']
+    raise ValueError('`example` must be one of {}'.format(examples))
+
+  # create the animation data object
+  animation=JuliaAnimation(n_frame,c,centre,dx,dy,span,fractal_resolution,limit,verbose=verbose)
+  # produce the animation
+  animate_julia(animation,fps=fps,file_name=file_name,fig_inches=(6*dx,6*dy),dpi=dpi)
 
 def produce_mandelbrot_visualisation(example='zoom_level_zero',method='cpu',fractal_resolution=3001,limit=1000,show_fig=False,save_fig=True
   ,file_name='mandelbrot.pdf',dpi=1200,num_threads=1,verbose=False):
