@@ -77,7 +77,7 @@ class CUDAWarning(Exception):
 
 class Dim():
   def __init__(self,central_point,dx,dy,span):
-    # assign the inputs
+    # assign inputs
     self.central_point=central_point
     self.dx=dx
     self.dy=dy
@@ -92,7 +92,14 @@ class Dim():
     self.endy=self.central_point[1]+self.y_span/2.
 
 class Fractal():
-  pass
+  def __init__(self,dim,fractal_resolution,max_itr):
+    # assign inputs
+    self.dim=dim
+    self.fractal_resolution=fractal_resolution
+    self.max_itr=max_itr
+    # calculate axis resolutions
+    self.x_resolution=dim.dx*fractal_resolution
+    self.y_resolution=dim.dy*fractal_resolution
 
 class Visualisation():
   pass
