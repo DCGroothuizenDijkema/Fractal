@@ -76,7 +76,20 @@ class CUDAWarning(Exception):
   pass
 
 class Dim():
-  pass
+  def __init__(self,central_point,dx,dy,span):
+    # assign the inputs
+    self.central_point=central_point
+    self.dx=dx
+    self.dy=dy
+    self.span=span
+    # calculate the axis spans
+    self.x_span=dx*span
+    self.y_span=dy*span
+    # calculate the fractal's corners
+    self.startx=self.central_point[0]-self.x_span/2.
+    self.starty=self.central_point[1]-self.y_span/2.
+    self.endx=self.central_point[0]+self.x_span/2.
+    self.endy=self.central_point[1]+self.y_span/2.
 
 class Fractal():
   pass
