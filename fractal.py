@@ -199,15 +199,58 @@ class Visualisation():
     else:
       iterations=self.fractal.iterations
       limit=self.fractal.limit
-  
+
+    self._plot(iterations,limit,color_map)
+
+    if show_fig:
+      plt.show()
+    if save_fig:
+      plt.savefig(file_name,dpi=dpi)
+
+  def _plot(self,data,mask,color_map):
     # black out where the limit could not be found (in the mandelbrot set)
     # and set color map
-    masked_iterations=np.ma.masked_where(iterations==limit,iterations)
+    masked_data=np.ma.masked_where(data==mask,data)
     if color_map is None:
       color_map=cm.Spectral_r
     color_map.set_bad(color='black')
     # produce the figure
-    self.ax.imshow(masked_iterations,cmap=color_map)
+    self.ax.imshow(masked_data,cmap=color_map)
+
+class NewtonVisualistion(Visualisation):
+  def __init__(self,fractal,fig_inches):
+    Visualisation.__init__(self,fractal,fig_inches)
+
+  def plot_roots(self,log=True,show_fig=False,save_fig=True,file_name='roots.pdf',dpi=1200,color_map=None):
+    self._plot(self.fractal.roots,-1,color_map)
+
+    if show_fig:
+      plt.show()
+    if save_fig:
+      plt.savefig(file_name,dpi=dpi)
+
+  def plot_newton(self,colors,log=True,show_fig=False,save_fig=True,file_name='newton.pdf',dpi=1200):
+    # find all unique roots by the index values, ignoring where no root was found
+    unique_roots=np.unique(self.fractal.roots)
+    unique_roots=np.delete(unique_roots,np.where(unique_roots==-1))
+
+    # scale
+    if log:
+      iterations=np.log(self.fractal.iterations)
+      limit=np.log(self.fractal.limit)
+    else:
+      iterations=self.fractal.iterations
+      limit=self.fractal.limit
+
+    # mask where no roots could be found
+    limit_bool=iterations!=limit
+    # plot where no roots could be found as black
+    no_root=np.ma.masked_array(iterations,limit_bool)
+    self.ax.imshow(no_root,cmap=ListedColormap([0,0,0]))
+    # for each root, mask it and plot it
+    for itr,root in enumerate(unique_roots):
+      masked_roots=np.ma.masked_array(iterations,self.fractal.roots!=root)
+      self.ax.imshow(iterations*masked_roots,cmap=colors[itr])
 
     if show_fig:
       plt.show()
@@ -569,7 +612,7 @@ def plot_newton_iteration(iterations,limit,log=True,show_fig=False,save_fig=True
 
   return fig,ax  
 
-def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',fig_inches=(12,12),dpi=1200):
+def plot_newton(roots,iterations,limit,colors,log=True,show_fig=False,save_fig=True,file_name='newton.pdf',fig_inches=(12,12),dpi=1200):
   '''
   Produce a plot of Newton's fractals, coloured by the root converged to and the number of iterations taken.
   
