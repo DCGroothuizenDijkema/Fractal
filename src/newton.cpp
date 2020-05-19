@@ -217,8 +217,8 @@ int __declspec(dllexport) sample_newton(double **re, double **im, int **iteratio
   std::chrono::duration<double> elapsed=finish-start;
   if (verbose)
   { 
-    std::cout << total << " points processed." << std::endl;
-    std::cout << "Time taken: " << elapsed.count() << "s." << std::endl;
+    std::cout << total << " points processed." << '\n'
+      << "Time taken: " << elapsed.count() << "s." << std::endl;
   }
 
   return std::numeric_limits<int>::max();

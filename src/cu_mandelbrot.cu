@@ -167,7 +167,7 @@ int __declspec(dllexport) sample_mandelbrot(int * const h_itr, const int max_itr
 
   if (verbose)
   {
-    std::cout << total << " points processed." << std::endl
+    std::cout << total << " points processed." << '\n'
       << "Time taken: " << elapsed/1000 << "s." << std::endl;
   }
 
@@ -193,6 +193,8 @@ int __declspec(dllexport) sample_julia(int * const h_itr, const double re, const
   // h_itr : int * const
   //  - 1D flat array representing a 2D array to write out either the number of iterations needed to diverge or a marker that the number was
   //      stable
+  // re,im : const double
+  //  - the real and imaginary parts of the complex number to find the Julia Set of
   // max_itr : const int
   //  - the maximum number of iterations allowed
   // xresolution,yresolution : const int 
@@ -240,7 +242,7 @@ int __declspec(dllexport) sample_julia(int * const h_itr, const double re, const
 
   if (verbose)
   {
-    std::cout << total << " points processed." << std::endl
+    std::cout << total << " points processed." << '\n'
       << "Time taken: " << elapsed/1000 << "s." << std::endl;
   }
 

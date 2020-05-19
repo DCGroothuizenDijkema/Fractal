@@ -219,7 +219,7 @@ int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im
 
   if (verbose)
   {
-    std::cout << total << " points processed." << std::endl
+    std::cout << total << " points processed." << '\n'
       << "Time taken: " << elapsed/1000 << "s." << std::endl;
   }
 
