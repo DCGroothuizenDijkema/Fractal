@@ -31,9 +31,9 @@ inline void cuda_check(const cudaError_t code, const char * const file, const ch
   if (code!=cudaSuccess)
   {
     std::cerr << file << ":" << line << ": CUDA ERROR (" << code << "): " << cudaGetErrorName(code) << ": " << cudaGetErrorString(code) 
-      << std::endl << "  " << func << "()" << std::endl
-      << "  {" << std::endl
-      << "    " << call << std::endl
+      << '\n' << "  " << func << "()" << '\n'
+      << "  {" << '\n'
+      << "    " << call << '\n'
       << "  }" << std::endl;
     exit(code);
   }
