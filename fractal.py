@@ -75,6 +75,15 @@ class CUDAWarning(Exception):
   '''
   pass
 
+class Dim():
+  pass
+
+class Fractal():
+  pass
+
+class Visualisation():
+  pass
+
 class JuliaAnimation(object):
   def __init__(self,frames,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
     self.frames=frames
