@@ -176,7 +176,43 @@ class MandelbrotFractal(Fractal):
     self.iterations=np.flipud(np.ctypeslib.as_array(act))
 
 class Visualisation():
-  pass
+  def __init__(self,fractal,fig_inches):
+    # make the figure and axis
+    self.fig,self.ax=plt.subplots()
+    # remove all borders
+    self.fig.subplots_adjust(0,0,1,1)
+    # remove all ticks and labels
+    self.ax.set_xticks([])
+    self.ax.set_yticks([])
+    self.ax.set_xticklabels([])
+    self.ax.set_yticklabels([])
+    # scale
+    self.fig.set_size_inches(fig_inches)
+
+    self.fractal=fractal
+
+  def plot_iterations(self,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',dpi=1200,color_map=None):
+    # scale
+    if log:
+      iterations=np.log(self.fractal.iterations)
+      limit=np.log(self.fractal.limit)
+    else:
+      iterations=self.fractal.iterations
+      limit=self.fractal.limit
+  
+    # black out where the limit could not be found (in the mandelbrot set)
+    # and set color map
+    masked_iterations=np.ma.masked_where(iterations==limit,iterations)
+    if color_map is None:
+      color_map=cm.Spectral_r
+    color_map.set_bad(color='black')
+    # produce the figure
+    self.ax.imshow(masked_iterations,cmap=color_map)
+
+    if show_fig:
+      plt.show()
+    if save_fig:
+      plt.savefig(file_name,dpi=dpi)
 
 class JuliaAnimation(object):
   def __init__(self,frames,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
