@@ -96,10 +96,84 @@ class Fractal():
     # assign inputs
     self.dim=dim
     self.fractal_resolution=fractal_resolution
-    self.max_itr=max_itr
     # calculate axis resolutions
     self.x_resolution=dim.dx*fractal_resolution
     self.y_resolution=dim.dy*fractal_resolution
+    # to be filled in at library call
+    self.limit=None
+    self.iterations=None
+
+class NewtonFractal(Fractal):
+  def __init__(self,coeffs,dim,fractal_resolution,max_itr):
+    Fractal.__init__(self,dim,fractal_resolution,max_itr)
+    # coefficients of the polynomial to take the root of
+    self.coeffs=coeffs
+    # to be filled in at library call
+    self.roots=None
+    self.ind=None
+    
+  def sample(self,max_itr,num_threads=1,verbose=False):
+    # arrays to store the real part of the root approached and the imaginary part of the root approached
+    tmp_re,act_re=c_matrix(ct.c_double,self.y_resolution,self.x_resolution)
+    tmp_im,act_im=c_matrix(ct.c_double,self.y_resolution,self.x_resolution)
+    # array to store the iteration count to get to the root
+    tmp_itr,act_itr=c_matrix(ct.c_int,self.y_resolution,self.x_resolution)
+    # coefficients of the polynomial in library form
+    poly_coeffs=c_vector(ct.c_double,len(self.coeffs),self.coeffs)
+    poly_degree=len(self.coeffs)-1
+
+    # call the library function
+    self.limit=_sample_newton(
+      tmp_re,tmp_im,tmp_itr,poly_coeffs,ct.c_int(max_itr),ct.c_int(num_threads),ct.c_int(poly_degree)
+      ,ct.c_int(self.x_resolution),ct.c_int(self.y_resolution)
+      ,ct.c_double(self.dim.startx),ct.c_double(self.dim.endx),ct.c_double(self.dim.starty),ct.c_double(self.dim.endy)
+      ,ct.c_bool(verbose)
+    )
+    self.iterations=np.flipud(np.ctypeslib.as_array(act_itr))
+
+    del tmp_itr
+    del tmp_re
+    del tmp_im
+    # convert roots to a numpy array
+    roots=1j*np.ctypeslib.as_array(act_im)
+    roots+=np.ctypeslib.as_array(act_re)
+    self.roots=np.flipud(roots)
+
+    # determine the actual roots
+    actuals=np.roots(np.flip(self.coeffs))
+    # real and imaginary parts of the actual roots
+    roots_re=c_vector(ct.c_double,len(actuals),np.real(actuals))
+    roots_im=c_vector(ct.c_double,len(actuals),np.imag(actuals))
+    # array to store which root the approximation is
+    ind=c_vector(ct.c_int,self.y_resolution*self.x_resolution)
+    
+    # we can't pass `act_re` and `act_im` to `_assign_roots()` because they're 2d and we need a 1d vector
+    total=self.x_resolution*self.y_resolution
+    re=c_vector(ct.c_double,total,np.real(roots.flatten()))
+    im=c_vector(ct.c_double,total,np.imag(roots.flatten()))
+    # call the library function
+    _assign_roots(ind,re,im,roots_re,roots_im,ct.c_int(poly_degree),ct.c_int(self.x_resolution),ct.c_int(self.y_resolution))
+
+    self.ind=np.flipud(np.reshape(np.ctypeslib.as_array(ind),(self.y_resolution,self.x_resolution)))
+
+class MandelbrotFractal(Fractal):
+  def __init__(self,dim,fractal_resolution,max_itr):
+    Fractal.__init__(self,dim,fractal_resolution,max_itr)
+
+  def sample(self,max_itr,num_threads=1,verbose=False):
+    # array to store the iteration count for each pixel
+    tmp,act=c_matrix(ct.c_int,self.y_resolution,self.x_resolution)
+
+    # call the library function
+    self.limit=_sample_mandelbrot(
+      tmp,ct.c_int(max_itr),ct.c_int(num_threads),ct.c_int(self.x_resolution),ct.c_int(self.y_resolution)
+      ,ct.c_double(self.dim.startx),ct.c_double(self.dim.endx),ct.c_double(self.dim.starty),ct.c_double(self.dim.endy)
+      ,ct.c_bool(verbose)
+    )
+
+    del tmp
+    # flip the rows because [startx,stary] is stored in [0,0]
+    self.iterations=np.flipud(np.ctypeslib.as_array(act))
 
 class Visualisation():
   pass
