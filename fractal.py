@@ -191,7 +191,7 @@ class Visualisation():
 
     self.fractal=fractal
 
-  def plot_iterations(self,log=True,show_fig=False,save_fig=True,file_name='mandelbrot.pdf',dpi=1200,color_map=None):
+  def plot_iterations(self,log=True,show_fig=False,save_fig=True,file_name='iterations.pdf',dpi=1200,color_map=None):
     # scale
     if log:
       iterations=np.log(self.fractal.iterations)
