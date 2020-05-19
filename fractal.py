@@ -9,7 +9,7 @@
 # Helper function file to produce visualisations of fractals
 
 
-# change is CUDA library dll has not been produced
+# change if CUDA library dll has not been produced
 CUDA_ENABLED=True
 
 import ctypes as ct
