@@ -92,7 +92,7 @@ class Dim():
     self.endy=self.central_point[1]+self.y_span/2.
 
 class Fractal():
-  def __init__(self,dim,fractal_resolution,max_itr):
+  def __init__(self,dim,fractal_resolution):
     # assign inputs
     self.dim=dim
     self.fractal_resolution=fractal_resolution
@@ -104,8 +104,8 @@ class Fractal():
     self.iterations=None
 
 class NewtonFractal(Fractal):
-  def __init__(self,coeffs,dim,fractal_resolution,max_itr):
-    Fractal.__init__(self,dim,fractal_resolution,max_itr)
+  def __init__(self,coeffs,dim,fractal_resolution):
+    Fractal.__init__(self,dim,fractal_resolution)
     # coefficients of the polynomial to take the root of
     self.coeffs=coeffs
     # to be filled in at library call
@@ -157,8 +157,8 @@ class NewtonFractal(Fractal):
     self.ind=np.flipud(np.reshape(np.ctypeslib.as_array(ind),(self.y_resolution,self.x_resolution)))
 
 class MandelbrotFractal(Fractal):
-  def __init__(self,dim,fractal_resolution,max_itr):
-    Fractal.__init__(self,dim,fractal_resolution,max_itr)
+  def __init__(self,dim,fractal_resolution):
+    Fractal.__init__(self,dim,fractal_resolution)
 
   def sample(self,max_itr,num_threads=1,verbose=False):
     # array to store the iteration count for each pixel
@@ -203,9 +203,11 @@ class Visualisation():
     self._plot(iterations,limit,color_map)
 
     if show_fig:
+      # self.fig.show()
       plt.show()
+      plt.close()
     if save_fig:
-      plt.savefig(file_name,dpi=dpi)
+      self.fig.savefig(file_name,dpi=dpi)
 
   def _plot(self,data,mask,color_map):
     # black out where the limit could not be found (in the mandelbrot set)
@@ -222,16 +224,16 @@ class NewtonVisualistion(Visualisation):
     Visualisation.__init__(self,fractal,fig_inches)
 
   def plot_roots(self,log=True,show_fig=False,save_fig=True,file_name='roots.pdf',dpi=1200,color_map=None):
-    self._plot(self.fractal.roots,-1,color_map)
-
+    self._plot(self.fractal.ind,-1,color_map)
+ 
     if show_fig:
       plt.show()
     if save_fig:
-      plt.savefig(file_name,dpi=dpi)
+      self.fig.savefig(file_name,dpi=dpi)
 
   def plot_newton(self,colors,log=True,show_fig=False,save_fig=True,file_name='newton.pdf',dpi=1200):
     # find all unique roots by the index values, ignoring where no root was found
-    unique_roots=np.unique(self.fractal.roots)
+    unique_roots=np.unique(self.fractal.ind)
     unique_roots=np.delete(unique_roots,np.where(unique_roots==-1))
 
     # scale
@@ -249,13 +251,14 @@ class NewtonVisualistion(Visualisation):
     self.ax.imshow(no_root,cmap=ListedColormap([0,0,0]))
     # for each root, mask it and plot it
     for itr,root in enumerate(unique_roots):
-      masked_roots=np.ma.masked_array(iterations,self.fractal.roots!=root)
+      masked_roots=np.ma.masked_array(iterations,self.fractal.ind!=root)
       self.ax.imshow(iterations*masked_roots,cmap=colors[itr])
 
     if show_fig:
       plt.show()
+      plt.close()
     if save_fig:
-      plt.savefig(file_name,dpi=dpi)
+      self.fig.savefig(file_name,dpi=dpi)
 
 class JuliaAnimation(object):
   def __init__(self,frames,c,central_point,dx,dy,span,fractal_resolution,max_itr,verbose=False,log=True,color_map=None):
