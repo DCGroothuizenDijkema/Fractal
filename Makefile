@@ -22,7 +22,7 @@ TARGET=./bin/fractal
 all: $(TARGET)
 
 $(TARGET):	$(OBJ) $(CUOBJ) $(COMMONOBJ)
-	$(LINK) $(OBJ) $(COMMONOBJ)
+	$(LINK) $(OBJ) $(CUOBJ) $(COMMONOBJ) 
 
 obj/mandelbrot.o: ./src/mandelbrot.cpp $(INC) $(COMMONINC)
 	$(CXX) $(FLAGS) ./src/mandelbrot.cpp
