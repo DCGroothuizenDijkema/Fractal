@@ -31,7 +31,7 @@ obj/newton.o: ./src/newton.cpp $(INC) $(COMMONINC)
 	$(CXX) $(FLAGS) ./src/newton.cpp
 
 obj/cu_mandelbrot.o: ./src/cu_mandelbrot.cu $(CUINC) $(COMMONINC)
-  $(CU) -c -o ./obj/cu_mandelbrot.o -I./src/ ./src/cu_mandelbrot.cu
+	$(CU) -c -o ./obj/cu_mandelbrot.o -I./src/ ./src/cu_mandelbrot.cu
 
 obj/cu_newton.o: ./src/cu_newton.cu $(CUINC) $(COMMONINC)
 	$(CU) -c -o ./obj/cu_newton.o -I./src/ ./src/cu_newton.cu
