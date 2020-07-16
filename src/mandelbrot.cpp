@@ -87,7 +87,7 @@ void compute_mandelbrot_range(int **iterations, const int max_itr, const int xre
   }
 }
 
-int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
+int sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
   , const int yresolution, const double startx, const double endx, const double starty, const double endy
   , const bool verbose)
 {

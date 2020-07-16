@@ -45,9 +45,9 @@ __global__ void compute_mandelbrot(int * const d_iterations, const int max_itr, 
 __global__ void compute_julia(int * const d_iterations, const double re, const double im, const int max_itr
   , const int xresolution, const int yresolution, const double startx, const double starty, const double deltax, const double deltay);
 
-int __declspec(dllexport) sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
+int sample_mandelbrot(int * const h_iterations, const int max_itr, const int xresolution, const int yresolution
   , const double startx, const double endx, const double starty, const double endy, const bool verbose);
-int __declspec(dllexport) sample_julia(int * const h_itr, const double re, const double im, const int max_itr
+int sample_julia(int * const h_itr, const double re, const double im, const int max_itr
   , const int xresolution, const int yresolution, const double startx, const double endx, const double starty, const double endy
   , const bool verbose);
 
@@ -59,7 +59,7 @@ __global__ void compute_newton(double * const d_re, double * const d_im, int * c
   , const int degree, const int xresolution, const int yresolution, const double startx, const double starty, const double deltax
   , const double deltay);
 
-int __declspec(dllexport) sample_newton(double * const h_re, double * const h_im, int * const h_itr, const double * const h_coeffs
+int sample_newton(double * const h_re, double * const h_im, int * const h_itr, const double * const h_coeffs
   , const int max_itr, const int degree, const int xresolution, const int yresolution, const double startx, const double endx
   , const double starty, const double endy, const bool verbose);
 

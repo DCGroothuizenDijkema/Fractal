@@ -58,7 +58,7 @@ inline OutputIt iteration_limits(const int num_threads, const int yresolution, O
 int iterate(std::complex<double> x, const std::complex<double> &c, const int max_itr);
 void compute_mandelbrot_range(int **iterations, const int max_itr, const int xresolution, const int start_itr, const int end_itr
   , const double startx, const double starty, const double deltax, const double deltay, const int total, bool verbose);
-int __declspec(dllexport) sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
+int sample_mandelbrot(int **iterations, const int max_itr, const int num_threads, const int xresolution
   , const int yresolution, const double startx, const double endx, const double starty, const double endy
   , const bool verbose);
 
@@ -69,7 +69,7 @@ std::complex<double> newton_root( double const * const coeffs, int * const itr_t
 void compute_newton_range(double **re, double **im, int **iterations, double * const coeffs, const int max_itr, const int degree
   , const int xresolution, const int start_itr, const int end_itr, const double startx, const double starty, const double deltax
   , const double deltay, const int total, bool verbose);
-int __declspec(dllexport) sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
+int sample_newton(double **re, double **im, int **iterations, double *coeffs, const int max_itr
   , const int num_threads, const int degree, const int xresolution, const int yresolution, const double startx
   , const double endx, const double starty, const double endy, const bool verbose);
 

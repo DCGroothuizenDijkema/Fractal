@@ -11,7 +11,7 @@
 
 #include <common.hpp>
 
-void __declspec(dllexport) assign_roots(int * const idx, const double * const re, const double * const im
+void assign_roots(int * const idx, const double * const re, const double * const im
   , const double * const roots_re, const double * const roots_im, const int degree, const int xresolution, const int yresolution)
 {
   //
