@@ -22,13 +22,13 @@ TARGET=./bin/fractal
 all: $(TARGET)
 
 $(TARGET):	$(OBJ) $(CUOBJ) $(COMMONOBJ)
-	$(LINK) $(OBJ) $(CUOBJ) $(COMMONOBJ) 
+	$(CXX) -L/usr/local/cuda/lib64 -lcudart -lcublas $(OBJ) $(CUOBJ) $(COMMONOBJ) 
 
 obj/mandelbrot.o: ./src/mandelbrot.cpp $(INC) $(COMMONINC)
-	$(CXX) $(FLAGS) ./src/mandelbrot.cpp
+	$(CXX) -o ./obj/mandelbrot.o $(FLAGS) ./src/mandelbrot.cpp
 
 obj/newton.o: ./src/newton.cpp $(INC) $(COMMONINC)
-	$(CXX) $(FLAGS) ./src/newton.cpp
+	$(CXX) -o ./obj/newton.o $(FLAGS) ./src/newton.cpp
 
 obj/cu_mandelbrot.o: ./src/cu_mandelbrot.cu $(CUINC) $(COMMONINC)
 	$(CU) -c -o ./obj/cu_mandelbrot.o -I./src/ ./src/cu_mandelbrot.cu
@@ -37,4 +37,4 @@ obj/cu_newton.o: ./src/cu_newton.cu $(CUINC) $(COMMONINC)
 	$(CU) -c -o ./obj/cu_newton.o -I./src/ ./src/cu_newton.cu
 
 obj/newton_common.o: ./src/cu_newton.cu $(COMMONINC)
-	$(CXX) $(FLAGS) ./src/newton_common.cpp
+	$(CXX) -o ./obj/newton_common.o $(FLAGS) ./src/newton_common.cpp

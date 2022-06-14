@@ -210,9 +210,9 @@ int sample_newton(double **re, double **im, int **iterations, double *coeffs, co
   if (verbose) { std::cout << "Processing " << total << " points." << std::endl; }
 
   // execute all threads
-  std::chrono::time_point<std::chrono::steady_clock> start=std::chrono::high_resolution_clock::now();
+  std::chrono::time_point<std::chrono::high_resolution_clock> start=std::chrono::high_resolution_clock::now();
   for (std::thread &th:threads) { th.join(); }
-  std::chrono::time_point<std::chrono::steady_clock> finish=std::chrono::high_resolution_clock::now();
+  std::chrono::time_point<std::chrono::high_resolution_clock> finish=std::chrono::high_resolution_clock::now();
 
   std::chrono::duration<double> elapsed=finish-start;
   if (verbose)
